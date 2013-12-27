@@ -65,7 +65,8 @@
             "name": ["RSpec", "RSpec (snippets and syntax)/Syntaxes/RSpec"],
             "rules": [
                 {"file_name": ".*spec\\.rb$"},
-                {"file_name": ".*\/spec\/.*\\.rb$"}
+                {"file_name": ".*/spec/.*\\.rb$"},
+                {"file_name": ".*\\\\spec\\\\.*\\.rb$"}
             ]
         },
         {
@@ -191,7 +192,8 @@
             // This rule requires the INI plugin to be installed (via PackageControl or https://github.com/clintberry/sublime-text-2-ini)
             "name": "INI",
             "rules": [
-                {"file_name": ".*\/git\/(attributes|config|ignore)$"},
+                {"file_name": ".*/git/(attributes|config|ignore)$"},
+                {"file_name": ".*\\\\git\\\\(attributes|config|ignore)$"},
                 {"file_name": ".*\\.(gitattributes|gitconfig|gitignore)$"},
                 {"file_name": ".*\\.ini(\\.dist)?$"},
                 {"file_name": ".*\\.npmrc$"}
