@@ -8,16 +8,12 @@
 // NOTE: file_name is the full, absolute path of the file. file_name is not altered in any way after it is retrieved
 // from ST2, so pay attention to case when constructing regular expressions.
 //
-// If the syntax name is same as the directory name it is in, there is no need to specify both. For example, if the tmLanguage
-// file is Packages/XML/XML.tmLanguage, you need only supply XML. The plugin will figure it out. If, however, the tmLanguage
-// file is different, such as Rails/Ruby Haml, then you need to specify both. The plugin is capable of supporting multiple
+// For syntax files you must specify the path to the syntax file. The plugin is capable of supporting multiple
 // levels of nesting if you need it to. For example, if you had all of your tmLanguage files for Rails organized like
 //
 // Packages/Rails/Language/*.tmLanguage
 //
-// you would define the syntax to be Rails/Language/Ruby Haml or whatever. Maybe a simpler way of saying it is this: if the plugin
-// finds a path separator in the syntax name, it will take the last piece and use it for the name of the tmLanguage file. Everything
-// else will be a path.
+// you would define the syntax to be Rails/Language/Ruby Haml or whatever.
 //
 // If it is desirable for the syntax rule to reference multiple tmLanguage files because it is not known which package will be on a
 // machine, you can set the syntax as an array of names like:
@@ -46,7 +42,7 @@
         {
             // I put XML first because of files like *.tmLanguage. It is unlikely that this rule will result in a
             // false positive, meaning if it matches, you probably want the XML syntax
-            "name": "XML",
+            "name": "XML/XML",
             "rules": [
                 {"file_name": ".*\\.xml(\\.dist)?$"},
                 {"first_line": "^<\\?xml"}
@@ -62,7 +58,7 @@
         },
         {
             // One could use just the second rule to match every ruby file in a /spec/ directory, but I prefer to more explicit.
-            "name": ["RSpec", "RSpec (snippets and syntax)/Syntaxes/RSpec"],
+            "name": ["RSpec/RSpec", "RSpec (snippets and syntax)/Syntaxes/RSpec"],
             "rules": [
                 {"file_name": ".*spec\\.rb$"},
                 {"file_name": ".*/spec/.*\\.rb$"},
@@ -78,29 +74,18 @@
         },
         {
             // This is an example of using a custom function to decide whether or not to apply this syntax.
-            // source can be an absolute path or relative. If relative, the plugin will look in Packages/User first
-            // and then the plugin directory. The one used here comes with the plugin. Any you write should be
-            // placed in Packages/User. Since no attempt is made to parse "source", you should be able to create
-            // a subdirectory under Packages/User, such as Packages/User/DetectSyntax, for any custom functions you
-            // create.
+            // source file should be in a plugin folder. "name" is the function name and "source" is the file
+            // in which the function is contained.  They rule should be specified as such.
             //
-            // If the name of the source file is the same as the name of the function *and* it is located in either
-            // Packages/User or Packages/DetectSyntax, you don't need to specify "source" in the rule. The plugin
-            // will append '.py' to the name if "source" is empty. So
-            //
-            //   {"function": {"name": "is_rails_file"}}
-            //
-            // will have the same effect as
-            //
-            //   {"function": {"name": "is_rails_file", "source": "is_rails_file.py"}}
+            //   {"function": {"name": "is_rails_file", "source": "Packages/ApplySyntax/is_rails_file"}}
             //
             "name": "Rails/Ruby on Rails",
             "rules": [
-                {"function": {"name": "is_rails_file"}}
+                {"function": {"name": "is_rails_file", "source": "ApplySyntax/is_rails_file"}}
             ]
         },
         {
-            "name": "Ruby",
+            "name": "Ruby/Ruby",
             "rules": [
                 {"file_name": ".*\\Gemfile$"},
                 {"file_name": ".*\\Capfile$"},
@@ -133,7 +118,7 @@
         // 	// shebang *and* end in .ruby. If "match" == "all", DetectSyntax will set the named syntax only if all
         // 	// rules match. If "match" is anything other than "all", the syntax will be set if any rule matches
         // 	// (the normal behavior)
-        // 	"name": "Ruby",
+        // 	"name": "Ruby/Ruby",
         // 	"match": "all",
         // 	"rules": [
         // 		{"binary": "ruby"},
@@ -148,7 +133,7 @@
         // 	//
         // 	// NOTE: Make sure to always use a specific match or pair this rule with one for the extension or the file or other
         // 	// characteristics, otherwise you might end up matching the settings file as well (because it contains the string)
-        // 	"name": "Handlebars",
+        // 	"name": "Handlebars/Handlebars",
         // 	"match": "all",
         // 	"rules": [
         // 		{"file_name": ".*\\.html$"},
@@ -163,13 +148,13 @@
             ]
         },
         {
-            "name": "Blade",
+            "name": "Blade/Blade",
             "rules": [
                 {"file_name": ".*\\.blade.php$"}
             ]
         },
         {
-            "name": "PHP",
+            "name": "PHP/PHP",
             "rules": [
                 {"file_name": ".*\\.(php|inc|phtml)$"},
                 {"first_line": "^<\\?php"}
@@ -182,7 +167,7 @@
             ]
         },
         {
-            "name": "YAML",
+            "name": "YAML/YAML",
             "rules": [
                 {"file_name": ".*\\.gemrc$"},
                 {"file_name": ".*\\.yml(\\.dist)?$"}
@@ -190,7 +175,7 @@
         },
         {
             // This rule requires the INI plugin to be installed (via PackageControl or https://github.com/clintberry/sublime-text-2-ini)
-            "name": "INI",
+            "name": "INI/INI",
             "rules": [
                 {"file_name": ".*/git/(attributes|config|ignore)$"},
                 {"file_name": ".*\\\\git\\\\(attributes|config|ignore)$"},
@@ -212,7 +197,7 @@
         {
             // This doesn't really need to be here as ST2 identifies Apache files correctly, but I leave it
             // for instructional value
-            "name": "Apache",
+            "name": "Apache/Apache",
             "rules": [
                 {"file_name": "^.*(\\.htaccess|\\.htgroups|\\.htpasswd|httpd\\.conf)$"}
             ]
