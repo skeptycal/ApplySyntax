@@ -23,6 +23,22 @@ DEFAULT_SETTINGS = \
 }
 '''
 
+DEPRECATED_SHORT_SYNTAX = '''ApplySyntax:
+
+Deprecated Call: %s
+
+Short format of syntax file path has been deprecated in order to ease confusion.  A consistent format is being used now in all cases.  Please use the long form from now on: "name": <Package Name>/<Path to syntax file>/<File name (do not need .tmLanguage)>
+'''
+
+DEPRECATED_SHORT_FUNCTION = '''ApplySyntax:
+
+Deprecated Call: %s
+
+This call will be skipped.
+
+Short format of function rules has been deprecated in order to ease confusion.  A consistent format is being used now in all cases.  Please use the long form from now on: {"function": {"name": <Name of function>, "source": <Package Name>/<Path to syntax file>/<File name (do not need .py)>}}
+'''
+
 
 def sublime_format_path(pth):
     m = re.match(r"^([A-Za-z]{1}):(?:/|\\)(.*)", pth)
@@ -117,6 +133,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
             name = os.path.basename(n)
 
             if not path:
+                sublime.error_message(DEPRECATED_SHORT_SYNTAX % name)
                 path = name
 
             file_name = name + '.tmLanguage'
@@ -210,13 +227,11 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         path_to_file = function.get("source")
         function_name = function.get("name")
 
-        if not path_to_file:
-            path_to_file = function_name + '.py'
+        if not path_to_file or path_to_file.lower().endswith(".py"):
+            sublime.error_message(DEPRECATED_SHORT_FUNCTION % path_to_file)
+            return False
 
-        if re.match(r"^Packages(?:\\|/)", path_to_file) is None:
-            path_to_file = os.path.join(self.plugin_dir, path_to_file)
-        else:
-            path_to_file = os.path.join(os.path.dirname(sublime.packages_path()), path_to_file)
+        path_to_file = os.path.join(sublime.packages_path(), path_to_file + '.py')
         function = self.get_function(path_to_file, function_name)
 
         if function is None:
