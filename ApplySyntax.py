@@ -151,6 +151,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                 except:
                     log('Syntax file for ' + name + ' does not exist at ' + new_syntax)
             else:
+                log('Syntax already set to ' + new_syntax)
                 break
 
     def load_syntaxes(self):
