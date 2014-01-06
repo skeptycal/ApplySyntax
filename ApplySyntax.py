@@ -38,6 +38,8 @@ This call will be skipped.
 Short format of function rules has been deprecated in order to ease confusion.  A consistent format is being used now in all cases.  Please use the long form from now on: {"function": {"name": <Name of function>, "source": <Package Name>/<Path to syntax file>/<File name (do not need .py)>}}
 '''
 
+on_touched_callback = None
+
 
 def sublime_format_path(pth):
     m = re.match(r"^([A-Za-z]{1}):(?:/|\\)(.*)", pth)
@@ -57,6 +59,7 @@ def debug(msg):
 
 class ApplySyntaxCommand(sublime_plugin.EventListener):
     def __init__(self):
+        global on_touched_callback
         self.first_line = None
         self.file_name = None
         self.entire_file = None
@@ -66,6 +69,10 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         self.plugin_dir = "Packages/%s" % self.plugin_name
         self.settings_file = self.plugin_name + '.sublime-settings'
         self.reraise_exceptions = False
+        on_touched_callback = self.on_touched
+
+    def touch(self, view):
+        view.settings().set("apply_syntax_touched", True)
 
     def get_setting(self, name, default = None):
         plugin_settings = sublime.load_settings(self.settings_file)
@@ -74,6 +81,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         return active_settings.get(name, plugin_settings.get(name, default))
 
     def on_new(self, view):
+        self.touch(view)
         self.ensure_user_settings()
         name = self.get_setting("new_file_syntax")
         if name:
@@ -81,9 +89,15 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
             self.set_syntax(name)
 
     def on_load(self, view):
+        self.touch(view)
         self.detect_syntax(view)
 
     def on_post_save(self, view):
+        self.touch(view)
+        self.detect_syntax(view)
+
+    def on_touched(self, view):
+        self.touch(view)
         self.detect_syntax(view)
 
     def detect_syntax(self, view):
@@ -278,3 +292,17 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         # file doesn't exist, let's create a bare one
         with open(user_settings_file, 'w') as f:
             f.write(DEFAULT_SETTINGS)
+
+
+def touch_untouched():
+    for window in sublime.windows():
+        for view in window.views():
+            if not view.settings().get("apply_syntax_touched", False):
+                if on_touched_callback is not None:
+                    on_touched_callback(view)
+                else:
+                    log("EventListener not loaded yet")
+
+
+def plugin_loaded():
+    touch_untouched()
