@@ -5,7 +5,13 @@ import platform
 def is_rails_file(file_name):
     windows = platform.system() == "Windows"
 
-    path = os.path.dirname(file_name)
+    is_unc = windows and file_name.startswith("\\\\")
+
+    if is_unc:
+        unc_drive, path = os.path.splitunc(file_name)
+    else:
+        path = os.path.dirname(file_name)
+
     file_name = os.path.basename(file_name).lower()
     name, extension = os.path.splitext(file_name)
 
@@ -19,14 +25,23 @@ def is_rails_file(file_name):
     # the existence of config/routes.rb. If it's found, the assumption is made that it's
     # a Rails app.
     while path != '':
-        if os.path.exists(os.path.join(path, 'config', 'routes.rb')):
-            result = True
-            break
-        elif windows and re.match(r"^[A-Za-z]{1}:\\$", path) is not None:
-            path = ''
-        elif not windows and path == '/':
-            path = ''
+        if is_unc:
+            if os.path.exists(os.path.join(unc_drive, path, 'config', 'routes.rb')):
+                result = True
+                break
+            elif path == '\\':
+                path = ''
+            else:
+                path = os.path.dirname(path)
         else:
-            path = os.path.dirname(path)
+            if os.path.exists(os.path.join(path, 'config', 'routes.rb')):
+                result = True
+                break
+            elif windows and re.match(r"^([A-Za-z]{1}:)\\$", path) is not None:
+                path = ''
+            elif not windows and path == '/':
+                path = ''
+            else:
+                path = os.path.dirname(path)
 
     return extension in ['.rb', '.rake'] and result
