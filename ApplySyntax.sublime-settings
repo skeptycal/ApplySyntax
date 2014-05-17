@@ -101,6 +101,7 @@
                 {"file_name": ".*\\Guardfile$"},
                 {"file_name": ".*\\[Rr]akefile$"},
                 {"file_name": ".*\\Vagrantfile(\\..*)?$"},
+                {"file_name": ".*\\Berksfile$"},
                 {"file_name": ".*\\Thorfile$"},
                 {"file_name": ".*\\.thor$"},
                 {"file_name": ".*\\config.ru$"},
@@ -110,7 +111,7 @@
                 {"file_name": ".*\\.rb$"},
                 {"file_name": ".*\\Podfile$"},
                 {"file_name": ".*\\.podspec$"},
-
+                {"file_name": ".*\\.rabl$"},
                 // A binary rule does the same thing as a "first_line" rule that uses
                 // a regexp to match a shebang, the difference being ApplySyntax
                 // will construct the regexp and the user doesn't have to. So
