@@ -125,35 +125,35 @@
             ]
         },
         // {
-        // This is an example of having to match all rules. Here, the file needs to
-        // have a ruby shebang *and* end in .ruby. If "match"=="all", ApplySyntax
-        // will set the named syntax only if all rules match. If "match" is
-        // anything other than "all", the syntax will be set if any rule matches
-        // (the normal behavior)
-        //  "name": "Ruby/Ruby",
-        //  "match": "all",
-        //  "rules": [
-        //      {"binary": "ruby"},
-        //      {"file_name": ".*\\.ruby$"}
-        //  ]
+        //     // This is an example of having to match all rules. Here, the file needs to
+        //     // have a ruby shebang *and* end in .ruby. If "match"=="all", ApplySyntax
+        //     // will set the named syntax only if all rules match. If "match" is
+        //     // anything other than "all", the syntax will be set if any rule matches
+        //     // (the normal behavior)
+        //     "name": "Ruby/Ruby",
+        //     "match": "all",
+        //     "rules": [
+        //         {"binary": "ruby"},
+        //         {"file_name": ".*\\.ruby$"}
+        //     ]
         // },
         // {
-        // This is an example of using a contains rule to match files which
-        // contain the specified string anywhere inside them. It's useful when
-        // you can only determine which syntax to use by looking at what's
-        // actually inside the file. In this case, since the file contains a
-        // handlebar template, we switch its syntax highlighting to Handlebars.
-        //
-        // NOTE: Make sure to always use a specific match or pair this rule
-        // with one for the extension or the file or other characteristics,
-        // otherwise you might end up matching the settings file as well
-        // (because it contains the string).
-        //
-        // Also, please note that using "contains" rules may (significantly) slow
-        // down the editor, as it is searching throughout the entire file instead
-        // of just looking at the file name and/or its first line. That being said,
-        // sometimes a full file search is the only way to properly identify the
-        // syntax of interest.
+        //     // This is an example of using a contains rule to match files which
+        //     // contain the specified string anywhere inside them. It's useful when
+        //     // you can only determine which syntax to use by looking at what's
+        //     // actually inside the file. In this case, since the file contains a
+        //     // handlebar template, we switch its syntax highlighting to Handlebars.
+        //     //
+        //     // NOTE: Make sure to always use a specific match or pair this rule
+        //     // with one for the extension or the file or other characteristics,
+        //     // otherwise you might end up matching the settings file as well
+        //     // (because it contains the string).
+        //     //
+        //     // Also, please note that using "contains" rules may (significantly) slow
+        //     // down the editor, as it is searching throughout the entire file instead
+        //     // of just looking at the file name and/or its first line. That being said,
+        //     // sometimes a full file search is the only way to properly identify the
+        //     // syntax of interest.
         //     "name": "Handlebars/Handlebars",
         //     "match": "all",
         //     "rules": [
