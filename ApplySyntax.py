@@ -5,8 +5,7 @@ import re
 import imp
 import sys
 
-DEFAULT_SETTINGS = \
-'''
+DEFAULT_SETTINGS = '''
 {
     // If you want exceptions reraised so you can see them in the console, change this to true.
     "reraise_exceptions": false,
@@ -43,7 +42,7 @@ on_touched_callback = None
 
 def sublime_format_path(pth):
     m = re.match(r"^([A-Za-z]{1}):(?:/|\\)(.*)", pth)
-    if sublime.platform() == "windows" and m != None:
+    if sublime.platform() == "windows" and m is not None:
         pth = m.group(1) + "/" + m.group(2)
     return pth.replace("\\", "/")
 
@@ -74,7 +73,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
     def touch(self, view):
         view.settings().set("apply_syntax_touched", True)
 
-    def get_setting(self, name, default = None):
+    def get_setting(self, name, default=None):
         plugin_settings = sublime.load_settings(self.settings_file)
         active_settings = self.view.settings() if self.view else {}
 
@@ -119,16 +118,16 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
     def reset_cache_variables(self, view):
         self.view = view
         self.file_name = view.file_name()
-        self.first_line = None # We read the first line only when needed
-        self.entire_file = None # We read the contents of the entire file only when needed
+        self.first_line = None  # We read the first line only when needed
+        self.entire_file = None  # We read the contents of the entire file only when needed
         self.syntaxes = []
         self.reraise_exceptions = False
 
     def fetch_first_line(self):
-        self.first_line = self.view.substr(self.view.line(0)) # load the first line only when needed
+        self.first_line = self.view.substr(self.view.line(0))  # load the first line only when needed
 
     def fetch_entire_file(self):
-        self.entire_file = self.view.substr(sublime.Region(0, self.view.size())) # load file only when needed
+        self.entire_file = self.view.substr(sublime.Region(0, self.view.size()))  # load file only when needed
 
     def set_syntax(self, name):
         # the default settings file uses / to separate the syntax name parts, but if the user
@@ -251,7 +250,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                 return False
 
     def regexp_matches(self, rule):
-        from_beginning = True # match only from the beginning or anywhere in the string
+        from_beginning = True  # match only from the beginning or anywhere in the string
 
         if "first_line" in rule:
             if self.first_line is None:
@@ -271,7 +270,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                 self.fetch_entire_file()
             subject = self.entire_file
             regexp = rule.get("contains")
-            from_beginning = False # requires us to match anywhere in the file
+            from_beginning = False  # requires us to match anywhere in the file
         else:
             return False
 
@@ -279,7 +278,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
             if from_beginning:
                 result = re.match(regexp, subject)
             else:
-                result = re.search(regexp, subject) # matches anywhere, not only from the beginning
+                result = re.search(regexp, subject)  # matches anywhere, not only from the beginning
             return result is not None
         else:
             return False

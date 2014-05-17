@@ -2,6 +2,7 @@ import os
 import re
 import platform
 
+
 def is_rails_file(file_name):
     windows = platform.system() == "Windows"
 
