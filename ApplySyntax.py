@@ -145,7 +145,7 @@ def prune_language_extensions(tracked):
                 lang_settings.erase("apply_syntax_extensions")
             else:
                 # Updated with relevant AS extensions
-                lang_settings.set(list(new_ext))
+                lang_settings.set("apply_syntax_extensions", list(new_ext))
             updated = True
         if updated:
             devlog("Pruned Extensions: %s" % str(bad_ext))
