@@ -46,6 +46,17 @@
     // same as "name" in the rules below. For example, if you want to have a new
     // file use JavaScript syntax, set "new_file_syntax" to 'JavaScript'.
     "new_file_syntax": false,
+    // Auto add extensions to language settings file in User folder.  This changes the
+    // default syntax for a file extension.  Keep in mind though that other rules can
+    // override this. By adding the extension to the language settings file, sidebar
+    // icons in ST3 will display proper icon for the syntax it will load with
+    // (assuming another rule doesn't override the syntax it loads with).
+    // ApplySyntax will log the extensions it adds under "apply_syntax_extensions"
+    // to try and track when obsolete ApplySyntax extensions should be removed.
+    // Do not manually remove "apply_syntax_extensions" from the settings file.
+    // "extenstions" rules are ignored by "match": "all" setting.
+    "add_exts_to_lang_settings": false,
+
     "default_syntaxes": [
         {
             // I put XML first because of files like *.tmLanguage. It is unlikely
@@ -54,7 +65,18 @@
             "name": "XML/XML",
             "rules": [
                 {"file_name": ".*\\.xml(\\.dist)?$"},
-                {"first_line": "^<\\?xml"}
+                {"first_line": "^<\\?xml"},
+                // See "add_exts_to_lang_settings" setting above for more info
+                // if using extensions, you don't need to set "file_name".
+                // Rule could be simplified to this:
+                //
+                // "name": "XML/XML",
+                // "rules": [
+                //     {"first_line": "^<\\?xml"},
+                //     {"extensions": ["xml.dist"]}
+                // ]
+                //
+                {"extensions": ["xml.dist"]}
             ]
         },
         {
@@ -62,7 +84,8 @@
             // in .rb and will be identified as Rails or Ruby otherwise.
             "name": "Cucumber/Cucumber Steps",
             "rules": [
-                {"file_name": ".*steps\\.rb$"}
+                {"file_name": ".*steps\\.rb$"},
+                {"extensions": ["steps.rb"]}
             ]
         },
         {
@@ -80,7 +103,8 @@
             // more explicit rather than less
             "name": "Rails/Ruby Haml",
             "rules": [
-                {"file_name": ".*\\.haml$"}
+                {"file_name": ".*\\.haml$"},
+                {"extensions": ["haml"]}
             ]
         },
         {
@@ -122,20 +146,22 @@
                 //
                 //      {"first_line": "^#\\!(?:.+)ruby"}
                 //
-                {"binary": "ruby"}
+                {"binary": "ruby"},
+                {"extensions": ["thor", "rake", "simplecov", "jbuilder", "rb", "podspec", "rabl"]}
             ]
         },
         // {
         //     // This is an example of having to match all rules. Here, the file needs to
         //     // have a ruby shebang *and* end in .ruby. If "match"=="all", ApplySyntax
-        //     // will set the named syntax only if all rules match. If "match" is
-        //     // anything other than "all", the syntax will be set if any rule matches
-        //     // (the normal behavior)
+        //     // will set the named syntax only if all rules match ("extenstions" rules
+        //     // are ignored by "match"=="all". If "match" is anything other than "all",
+        //     // the syntax will be set if any rule matches (the normal behavior)
         //     "name": "Ruby/Ruby",
         //     "match": "all",
         //     "rules": [
         //         {"binary": "ruby"},
-        //         {"file_name": ".*\\.ruby$"}
+        //         {"file_name": ".*\\.ruby$"},
+        //         {"extensions": ["ruby"]}
         //     ]
         // },
         // {
@@ -166,7 +192,8 @@
             // Emblem syntax matches Ruby Slim
             "name": "Ruby Slim/Syntaxes/Ruby Slim",
             "rules": [
-                {"file_name": ".*\\.emblem$"}
+                {"file_name": ".*\\.emblem$"},
+                {"extensions": ["emblem"]}
             ]
         },
         {
@@ -179,20 +206,23 @@
             "name": "PHP/PHP",
             "rules": [
                 {"file_name": ".*\\.(php(3|4|5)?|inc|phtml)$"},
-                {"first_line": "^<\\?php"}
+                {"first_line": "^<\\?php"},
+                {"extensions": ["php3", "php4", "php5", "inc", "phtml"]}
             ]
         },
         {
             "name": "PHP/Smarty",
             "rules": [
-                {"file_name": ".*\\.tpl$"}
+                {"file_name": ".*\\.tpl$"},
+                {"extensions": ["tpl"]}
             ]
         },
         {
             "name": "YAML/YAML",
             "rules": [
                 {"file_name": ".*\\.gemrc$"},
-                {"file_name": ".*\\.yml(\\.dist)?$"}
+                {"file_name": ".*\\.yml(\\.dist)?$"},
+                {"extensions": ["gemrc", "yml", "yml.dist"]}
             ]
         },
         {
@@ -204,7 +234,8 @@
                 {"file_name": ".*\\\\git\\\\(attributes|config|ignore)$"},
                 {"file_name": ".*\\.(gitattributes|gitconfig|gitignore)$"},
                 {"file_name": ".*\\.ini(\\.dist)?$"},
-                {"file_name": ".*\\.npmrc$"}
+                {"file_name": ".*\\.npmrc$"},
+                {"extensions": ["gitattributes", "gitconfig", "gitignore", "ini.dist", "npmrc"]}
             ]
         },
         {
@@ -215,7 +246,8 @@
                 {"file_name": ".*\\.z(shrc|shenv|profile|login|logout).*$"},
                 {"file_name": ".*\\.(bash|sh|zsh)$"},
                 {"binary": "bash"},
-                {"binary": "zsh"}
+                {"binary": "zsh"},
+                {"extensions": ["bash", "sh", "zsh"]}
             ]
         },
         {
@@ -223,7 +255,8 @@
             // Apache files correctly, but I leave it for instructional value
             "name": "Apache/Apache",
             "rules": [
-                {"file_name": "^.*(\\.htaccess|\\.htgroups|\\.htpasswd|httpd\\.conf)$"}
+                {"file_name": "^.*(\\.htaccess|\\.htgroups|\\.htpasswd|httpd\\.conf)$"},
+                {"extensions": ["htaccess", "htgroups", "htpasswd", "httpd.conf"]}
             ]
         },
         {
@@ -232,7 +265,8 @@
             "name": "Python/Python",
             "rules": [
                 {"file_name": ".*\\.(py|pyw|py3)"},
-                {"binary": "python"}
+                {"binary": "python"},
+                {"extensions": ["py3", "pyw"]}
             ]
         }
     ]

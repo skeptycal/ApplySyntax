@@ -4,6 +4,7 @@ import os
 import re
 import imp
 import sys
+from .lib.package_search import PackageSearch
 
 DEFAULT_SETTINGS = '''
 {
@@ -37,22 +38,190 @@ This call will be skipped.
 Short format of function rules has been deprecated in order to ease confusion.  A consistent format is being used now in all cases.  Please use the long form from now on: {"function": {"name": <Name of function>, "source": <Package Name>/<Path to syntax file>/<File name (do not need .py)>}}
 '''
 
+PLUGIN_NAME = 'ApplySyntax'
+PLUGIN_DIR = "Packages/%s" % PLUGIN_NAME
+PLUGIN_SETTINGS = PLUGIN_NAME + '.sublime-settings'
+SETTINGS = {}
+LANG_HASH = 0
+
+# Package Search object
+PS = PackageSearch()
+
+# Call back for whether view(s) have been touched
 on_touched_callback = None
 
 
+def ensure_user_settings():
+    """
+    Create a default 'User' settings file for ApplySyntax if it doesn't exist
+    """
+
+    user_settings_file = os.path.join(sublime.packages_path(), 'User', PLUGIN_SETTINGS)
+    if os.path.exists(user_settings_file):
+        return
+
+    # file doesn't exist, let's create a bare one
+    with open(user_settings_file, 'w') as f:
+        f.write(DEFAULT_SETTINGS)
+
+
 def sublime_format_path(pth):
+    """
+    Format the path for the sublime API
+    """
+
     m = re.match(r"^([A-Za-z]{1}):(?:/|\\)(.*)", pth)
     if sublime.platform() == "windows" and m is not None:
         pth = m.group(1) + "/" + m.group(2)
     return pth.replace("\\", "/")
 
 
+def get_lang_hash():
+    """
+    Return the hash of the loaded languages in Sublime.
+    Return the actual language frozenset (hashable) as well.
+    """
+
+    # Strip off tmlanguage so we don't have to worry about case of extension
+    lst = frozenset([os.path.splitext(x)[0] for x in PS.search(pattern="*.tmLanguage")])
+    hsh = hash(lst)
+    devlog("Language Hash - '%s'" % str(hsh))
+    return hsh, lst
+
+
+def process_language_extensions(ext, lst, names, tracked):
+    """
+    Process the extensions for the given language
+    """
+
+    # Always deal with language names as a series of names
+    if not isinstance(names, list):
+        names = [names]
+
+    # For each language name that currently exists and is loaded,
+    # append the extensions to the corresponding settings file
+    # if the extension is not already there
+    for n in names:
+        updated = False
+        path = os.path.dirname(n)
+        name = os.path.basename(n)
+        file_name = name
+        settings_name = name + '.sublime-settings'
+        syntax_file = sublime_format_path('/'.join(['Packages', path, file_name]))
+        if syntax_file in lst:
+            devlog("Checking %s Extensions..." % n)
+            lang_settings = sublime.load_settings(settings_name)
+            lang_ext = set(lang_settings.get("extensions", []))
+            apsy_ext = set(lang_settings.get("apply_syntax_extensions", []))
+
+            # Update settings file with extensions
+            for e in ext:
+                if e not in lang_ext:
+                    # Append extension to current sublime extension list
+                    lang_ext.add(e)
+                    # Track which extensions were specifically added by apply syntax
+                    apsy_ext.add(e)
+                    updated = True
+                # Track the extensions found for the syntax file
+                tracked[name].add(e)
+
+            if updated:
+                devlog("Updated Extensions: %s" % str(lang_ext))
+                lang_settings.set("extensions", list(lang_ext))
+                lang_settings.set("apply_syntax_extensions", list(apsy_ext))
+                sublime.save_settings(settings_name)
+
+
+def prune_language_extensions(tracked):
+    """
+    Prune dead extensions that were added by ApplySyntax (AS),
+    but are no longer defined in AS
+
+    ext         - sublime's extension list for the given language
+    old_ext     - The current saved list of AS added extension
+    new_ext     - The current tracked list of extensions found defined by AS
+    bad_ext     - (old_ext - new_ext) Extensions that were added by AS but are no longer defined
+    updated_ext - (ext - bad_ext) sublime's adjusted extension list minus the obsolete ones
+    """
+
+    devlog("Prunning Extensions")
+    for name, new_ext in tracked.items():
+        updated = False
+        settings_name = name + '.sublime-settings'
+        lang_settings = sublime.load_settings(settings_name)
+        ext = set(lang_settings.get("extensions", []))
+        old_ext = set(lang_settings.get("apply_syntax_extensions", []))
+
+        # Calculate the correct extension list
+        bad_ext = old_ext.difference(new_ext)
+        updated_ext = ext.difference(bad_ext)
+
+        # Update settings file if necessary
+        if len(updated_ext) != len(ext):
+            # Update pruned list
+            lang_settings.set("extensions", list(updated_ext))
+            if len(new_ext) == 0:
+                # No currently added extensions by AS
+                lang_settings.erase("apply_syntax_extensions")
+            else:
+                # Updated with relevant AS extensions
+                lang_settings.set(list(new_ext))
+            updated = True
+        if updated:
+            devlog("Pruned Extensions: %s" % str(bad_ext))
+            sublime.save_settings(settings_name)
+
+
+def update_extenstions(lst):
+    """
+    Walk through all syntax rules updating the
+    extensions in the corresponding language settings.
+    """
+
+    devlog("Updating Extensions")
+
+    # Prepare a list to track extensions defined by ApplySyntax
+    tracked = dict([(os.path.splitext(os.path.basename(l))[0], set()) for l in lst])
+
+    # Walk the entries
+    for entry in SETTINGS.get("default_syntaxes") + SETTINGS.get("syntaxes"):
+        # Grab the extensions from each relevant rule
+        ext = []
+        for rule in entry.get("rules", []):
+            if "extensions" in rule:
+                ext += rule.get("extensions", [])
+
+        # Add the extensions to the relevant language settings file
+        if len(ext):
+            devlog("Found Extensions: %s" % str(ext))
+            process_language_extensions(ext, lst, entry.get("name"), tracked)
+
+    prune_language_extensions(tracked)
+
+
 def log(msg):
+    """
+    ApplySyntax log message in console
+    """
+
     print("ApplySyntax: %s" % msg)
 
 
 def debug(msg):
-    if bool(sublime.load_settings('ApplySyntax.sublime-settings').get("debug_enabled", False)):
+    """
+    ApplySyntax log message in console (debug mode only)
+    """
+
+    if bool(SETTINGS.get("debug_enabled", False)) or bool(SETTINGS.get("dev_enabled", False)):
+        log(msg)
+
+
+def devlog(msg):
+    """
+    ApplySyntax log message in console (dev mode only)
+    """
+
+    if bool(SETTINGS.get("dev_enabled", False)):
         log(msg)
 
 
@@ -64,24 +233,32 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         self.entire_file = None
         self.view = None
         self.syntaxes = []
-        self.plugin_name = 'ApplySyntax'
-        self.plugin_dir = "Packages/%s" % self.plugin_name
-        self.settings_file = self.plugin_name + '.sublime-settings'
         self.reraise_exceptions = False
         on_touched_callback = self.on_touched
 
     def touch(self, view):
         view.settings().set("apply_syntax_touched", True)
 
+    def update_extenstions(self):
+        # Only update extensions if desired
+        if not SETTINGS.get("add_exts_to_lang_settings", False):
+            devlog("Skipping Extension Update")
+            return
+
+        global LANG_HASH
+        hsh, lst = get_lang_hash()
+        if LANG_HASH != hsh:
+            LANG_HASH = hsh
+            update_extenstions(lst)
+
     def get_setting(self, name, default=None):
-        plugin_settings = sublime.load_settings(self.settings_file)
         active_settings = self.view.settings() if self.view else {}
 
-        return active_settings.get(name, plugin_settings.get(name, default))
+        return active_settings.get(name, SETTINGS.get(name, default))
 
     def on_new(self, view):
         self.touch(view)
-        self.ensure_user_settings()
+        self.update_extenstions()
         name = self.get_setting("new_file_syntax")
         if name:
             self.view = view
@@ -89,14 +266,17 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
 
     def on_load(self, view):
         self.touch(view)
+        self.update_extenstions()
         self.detect_syntax(view)
 
     def on_post_save(self, view):
         self.touch(view)
+        self.update_extenstions()
         self.detect_syntax(view)
 
     def on_touched(self, view):
         self.touch(view)
+        self.update_extenstions()
         self.detect_syntax(view)
 
     def detect_syntax(self, view):
@@ -130,11 +310,13 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         self.entire_file = self.view.substr(sublime.Region(0, self.view.size()))  # load file only when needed
 
     def set_syntax(self, name):
-        # the default settings file uses / to separate the syntax name parts, but if the user
-        # is on windows, that might not work right. And if the user happens to be on Mac/Linux but
-        # is using rules that were written on windows, the same thing will happen. So let's
-        # be intelligent about this and replace / and \ with os.path.sep to get to
-        # a reasonable starting point
+        """
+        the default settings file uses / to separate the syntax name parts, but if the user
+        is on windows, that might not work right. And if the user happens to be on Mac/Linux but
+        is using rules that were written on windows, the same thing will happen. So let's
+        be intelligent about this and replace / and \ with os.path.sep to get to
+        a reasonable starting point
+        """
 
         if not isinstance(name, list):
             names = [name]
@@ -168,9 +350,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                 break
 
     def load_syntaxes(self):
-        self.ensure_user_settings()
-        settings = sublime.load_settings(self.settings_file)
-        self.reraise_exceptions = settings.get("reraise_exceptions")
+        self.reraise_exceptions = SETTINGS.get("reraise_exceptions")
         # load the default syntaxes
         default_syntaxes = self.get_setting("default_syntaxes", [])
         # load any user-defined syntaxes
@@ -185,6 +365,10 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         match_all = syntax.get("match") == 'all'
 
         for rule in rules:
+            if 'extensions' in rule:
+                # Do not let 'extensions' contribute to 'match_all'
+                continue
+
             if 'function' in rule:
                 result = self.function_matches(rule)
             else:
@@ -283,15 +467,6 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         else:
             return False
 
-    def ensure_user_settings(self):
-        user_settings_file = os.path.join(sublime.packages_path(), 'User', self.settings_file)
-        if os.path.exists(user_settings_file):
-            return
-
-        # file doesn't exist, let's create a bare one
-        with open(user_settings_file, 'w') as f:
-            f.write(DEFAULT_SETTINGS)
-
 
 def touch_untouched():
     for window in sublime.windows():
@@ -300,8 +475,33 @@ def touch_untouched():
                 if on_touched_callback is not None:
                     on_touched_callback(view)
                 else:
-                    log("EventListener not loaded yet")
+                    devlog("EventListener not loaded yet")
+
+
+def on_reload():
+    """
+    Only update extensions if desired.
+    Remove extensions added by ApplySyntax if disabled.
+    """
+
+    if not SETTINGS.get("add_exts_to_lang_settings", False):
+        tracked = dict(
+            [(os.path.splitext(os.path.basename(l))[0], set()) for l in get_lang_hash()[1]]
+        )
+        prune_language_extensions(tracked)
+        devlog("Skipping Extension Update")
+        return
+
+    global LANG_HASH
+    LANG_HASH, lang_list = get_lang_hash()
+    update_extenstions(lang_list)
 
 
 def plugin_loaded():
+    global SETTINGS
+    ensure_user_settings()
+    SETTINGS = sublime.load_settings(PLUGIN_SETTINGS)
+    SETTINGS.clear_on_change('reload')
+    SETTINGS.add_on_change('reload', on_reload)
+    on_reload()
     touch_untouched()
