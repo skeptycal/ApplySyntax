@@ -212,7 +212,7 @@ def debug(msg):
     ApplySyntax log message in console (debug mode only)
     """
 
-    if bool(SETTINGS.get("debug_enabled", False)) or bool(SETTINGS.get("dev_enabled", False)):
+    if bool(SETTINGS.get("debug_enabled", True)) or bool(SETTINGS.get("dev_enabled", False)):
         log(msg)
 
 
@@ -341,12 +341,12 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                 try:
                     sublime.load_resource(new_syntax)
                     self.view.set_syntax_file(new_syntax)
-                    log('Syntax set to ' + name + ' using ' + new_syntax)
+                    debug('Syntax set to ' + name + ' using ' + new_syntax)
                     break
                 except:
-                    log('Syntax file for ' + name + ' does not exist at ' + new_syntax)
+                    debug('Syntax file for ' + name + ' does not exist at ' + new_syntax)
             else:
-                log('Syntax already set to ' + new_syntax)
+                debug('Syntax already set to ' + new_syntax)
                 break
 
     def load_syntaxes(self):
