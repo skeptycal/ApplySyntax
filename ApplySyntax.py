@@ -147,12 +147,12 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                 # let's make sure it exists first!
                 if os.path.exists(file_path):
                     self.view.set_syntax_file(new_syntax)
-                    log('Syntax set to ' + name + ' using ' + new_syntax)
+                    debug('Syntax set to ' + name + ' using ' + new_syntax)
                     break
                 else:
-                    log('Syntax file for ' + name + ' does not exist at ' + new_syntax)
+                    debug('Syntax file for ' + name + ' does not exist at ' + new_syntax)
             else:
-                log('Syntax already set to ' + new_syntax)
+                debug('Syntax already set to ' + new_syntax)
                 break
 
     def load_syntaxes(self):
