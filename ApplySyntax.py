@@ -4,7 +4,6 @@ import os
 import re
 import imp
 import sys
-from .lib.package_search import PackageSearch
 
 DEFAULT_SETTINGS = '''
 {
@@ -44,9 +43,6 @@ PLUGIN_SETTINGS = PLUGIN_NAME + '.sublime-settings'
 SETTINGS = {}
 LANG_HASH = 0
 
-# Package Search object
-PS = PackageSearch()
-
 # Call back for whether view(s) have been touched
 on_touched_callback = None
 
@@ -83,7 +79,7 @@ def get_lang_hash():
     """
 
     # Strip off tmlanguage so we don't have to worry about case of extension
-    lst = frozenset([os.path.splitext(x)[0] for x in PS.search(pattern="*.tmLanguage")])
+    lst = frozenset([os.path.splitext(x)[0] for x in sublime.find_resources("*.tmLanguage")])
     hsh = hash(lst)
     devlog("Language Hash - '%s'" % str(hsh))
     return hsh, lst
