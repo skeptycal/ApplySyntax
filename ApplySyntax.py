@@ -52,7 +52,7 @@ def log(msg):
 
 
 def debug(msg):
-    if bool(sublime.load_settings('ApplySyntax.sublime-settings').get("debug_enabled", False)):
+    if bool(sublime.load_settings('ApplySyntax.sublime-settings').get("debug_enabled", True)):
         log(msg)
 
 
