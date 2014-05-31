@@ -6,8 +6,7 @@ import imp
 import sys
 import warnings
 
-DEFAULT_SETTINGS = \
-'''
+DEFAULT_SETTINGS = '''
 {
     // If you want exceptions reraised so you can see them in the console, change this to true.
     "reraise_exceptions": false,
@@ -23,36 +22,60 @@ DEFAULT_SETTINGS = \
 }
 '''
 
-DEPRECATED_SHORT_SYNTAX = '''ApplySyntax:
+PLUGIN_NAME = 'ApplySyntax'
+PLUGIN_DIR = "Packages/%s" % PLUGIN_NAME
+PLUGIN_SETTINGS = PLUGIN_NAME + '.sublime-settings'
+SETTINGS = {}
 
-Deprecated Call: %s
 
-Short format of syntax file path has been deprecated in order to ease confusion.  A consistent format is being used now in all cases.  Please use the long form from now on: "name": <Package Name>/<Path to syntax file>/<File name (do not need .tmLanguage)>
-'''
+def ensure_user_settings():
+    """
+    Create a default 'User' settings file for ApplySyntax if it doesn't exist
+    """
 
-DEPRECATED_SHORT_FUNCTION = '''ApplySyntax:
+    user_settings_file = os.path.join(sublime.packages_path(), 'User', PLUGIN_SETTINGS)
+    if os.path.exists(user_settings_file):
+        return
 
-Deprecated Call: %s
-
-This call will be skipped.
-
-Short format of function rules has been deprecated in order to ease confusion.  A consistent format is being used now in all cases.  Please use the long form from now on: {"function": {"name": <Name of function>, "source": <Package Name>/<Path to syntax file>/<File name (do not need .py)>}}
-'''
+    # file doesn't exist, let's create a bare one
+    with open(user_settings_file, 'w') as f:
+        f.write(DEFAULT_SETTINGS)
 
 
 def sublime_format_path(pth):
+    """
+    Format the path for the sublime API
+    """
+
     m = re.match(r"^([A-Za-z]{1}):(?:/|\\)(.*)", pth)
-    if sublime.platform() == "windows" and m != None:
+    if sublime.platform() == "windows" and m is not None:
         pth = m.group(1) + "/" + m.group(2)
     return pth.replace("\\", "/")
 
 
 def log(msg):
+    """
+    ApplySyntax log message in console
+    """
+
     print("ApplySyntax: %s" % msg)
 
 
 def debug(msg):
-    if bool(sublime.load_settings('ApplySyntax.sublime-settings').get("debug_enabled", True)):
+    """
+    ApplySyntax log message in console (debug mode only)
+    """
+
+    if bool(SETTINGS.get("debug_enabled", True)) or bool(SETTINGS.get("dev_enabled", False)):
+        log(msg)
+
+
+def devlog(msg):
+    """
+    ApplySyntax log message in console (dev mode only)
+    """
+
+    if bool(SETTINGS.get("dev_enabled", False)):
         log(msg)
 
 
@@ -63,19 +86,14 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         self.entire_file = None
         self.view = None
         self.syntaxes = []
-        self.plugin_name = 'ApplySyntax'
-        self.plugin_dir = os.path.join(sublime.packages_path(), self.plugin_name)
-        self.settings_file = self.plugin_name + '.sublime-settings'
         self.reraise_exceptions = False
 
-    def get_setting(self, name, default = None):
-        plugin_settings = sublime.load_settings(self.settings_file)
+    def get_setting(self, name, default=None):
         active_settings = self.view.settings() if self.view else {}
 
-        return active_settings.get(name, plugin_settings.get(name, default))
+        return active_settings.get(name, SETTINGS.get(name, default))
 
     def on_new(self, view):
-        self.ensure_user_settings()
         name = self.get_setting("new_file_syntax")
         if name:
             self.view = view
@@ -106,23 +124,25 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
     def reset_cache_variables(self, view):
         self.view = view
         self.file_name = view.file_name()
-        self.first_line = None # we read the first line only when needed
-        self.entire_file = None # we read the contents of the entire file only when needed
+        self.first_line = None  # we read the first line only when needed
+        self.entire_file = None  # we read the contents of the entire file only when needed
         self.syntaxes = []
         self.reraise_exceptions = False
 
     def fetch_first_line(self):
-        self.first_line = self.view.substr(self.view.line(0)) # load the first line only when needed
+        self.first_line = self.view.substr(self.view.line(0))  # load the first line only when needed
 
     def fetch_entire_file(self):
-        self.entire_file = self.view.substr(sublime.Region(0, self.view.size())) # load file only when needed
+        self.entire_file = self.view.substr(sublime.Region(0, self.view.size()))  # load file only when needed
 
     def set_syntax(self, name):
-        # the default settings file uses / to separate the syntax name parts, but if the user
-        # is on windows, that might not work right. And if the user happens to be on Mac/Linux but
-        # is using rules that were written on windows, the same thing will happen. So let's
-        # be intelligent about this and replace / and \ with os.path.sep to get to
-        # a reasonable starting point
+        """
+        the default settings file uses / to separate the syntax name parts, but if the user
+        is on windows, that might not work right. And if the user happens to be on Mac/Linux but
+        is using rules that were written on windows, the same thing will happen. So let's
+        be intelligent about this and replace / and \ with os.path.sep to get to
+        a reasonable starting point
+        """
 
         if not isinstance(name, list):
             names = [name]
@@ -133,8 +153,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
             name = os.path.basename(n)
 
             if not path:
-                sublime.error_message(DEPRECATED_SHORT_SYNTAX % name)
-                path = name
+                continue
 
             file_name = name + '.tmLanguage'
             new_syntax = sublime_format_path(os.path.join("Packages", path, file_name))
@@ -156,9 +175,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                 break
 
     def load_syntaxes(self):
-        self.ensure_user_settings()
-        settings = sublime.load_settings(self.settings_file)
-        self.reraise_exceptions = settings.get("reraise_exceptions")
+        self.reraise_exceptions = SETTINGS.get("reraise_exceptions")
         # load the default syntaxes
         default_syntaxes = self.get_setting("default_syntaxes", [])
         # load any user-defined syntaxes
@@ -173,6 +190,13 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         match_all = syntax.get("match") == 'all'
 
         for rule in rules:
+            if 'extensions' in rule:
+                # Do not let 'extensions' contribute to 'match_all'
+                # Extensions are not currently supported in ST2,
+                # but this provides a graceful way of handling the rule
+                # if it is accidentally included.
+                continue
+
             if 'function' in rule:
                 result = self.function_matches(rule)
             else:
@@ -229,7 +253,6 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         function_name = function.get("name")
 
         if not path_to_file or path_to_file.lower().endswith(".py"):
-            sublime.error_message(DEPRECATED_SHORT_FUNCTION % path_to_file)
             return False
 
         path_to_file = os.path.join(sublime.packages_path(), path_to_file + '.py')
@@ -248,7 +271,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                 return False
 
     def regexp_matches(self, rule):
-        from_beginning = True # match only from the beginning or anywhere in the string
+        from_beginning = True  # match only from the beginning or anywhere in the string
 
         if "first_line" in rule:
             if self.first_line is None:
@@ -268,7 +291,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                 self.fetch_entire_file()
             subject = self.entire_file
             regexp = rule.get("contains")
-            from_beginning = False # requires us to match anywhere in the file
+            from_beginning = False  # requires us to match anywhere in the file
         else:
             return False
 
@@ -276,16 +299,12 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
             if from_beginning:
                 result = re.match(regexp, subject)
             else:
-                result = re.search(regexp, subject) # matches anywhere, not only from the beginning
+                result = re.search(regexp, subject)  # matches anywhere, not only from the beginning
             return result is not None
         else:
             return False
 
-    def ensure_user_settings(self):
-        user_settings_file = os.path.join(sublime.packages_path(), 'User', self.settings_file)
-        if os.path.exists(user_settings_file):
-            return
 
-        # file doesn't exist, let's create a bare one
-        with open(user_settings_file, 'w') as f:
-            f.write(DEFAULT_SETTINGS)
+# Plugin loaded
+ensure_user_settings()
+SETTINGS = sublime.load_settings(PLUGIN_SETTINGS)
