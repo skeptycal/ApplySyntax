@@ -69,9 +69,37 @@ def get_lang_hash():
     return hsh, lst
 
 
-def process_language_extensions(ext, lst, names, tracked):
+def update_language_extensions(ext_added):
     """
-    Process the extensions for the given language
+    Process the extensions for each language
+    """
+
+    for lang, exts in ext_added.items():
+        updated = False
+        settings_file = lang + ".sublime-settings"
+        lang_settings = sublime.load_settings(settings_file)
+        lang_ext = set(lang_settings.get("extensions", []))
+        apsy_ext = set(lang_settings.get("apply_syntax_extensions", []))
+
+        for ext in list(exts):
+            if ext not in lang_ext:
+                # Append extension to current sublime extension list
+                lang_ext.add(ext)
+                # Track which extensions were specifically added by apply syntax
+                apsy_ext.add(ext)
+                updated = True
+
+        if updated:
+            devlog("============" + settings_file + "============")
+            devlog("Updated Extensions: %s" % str(lang_ext))
+            lang_settings.set("extensions", list(lang_ext))
+            lang_settings.set("apply_syntax_extensions", list(apsy_ext))
+            sublime.save_settings(settings_file)
+
+
+def map_extensions(ext, lst, names, ext_map, ext_added):
+    """
+    Create mappings to help with updating and prunning extensions
     """
 
     # Always deal with language names as a series of names
@@ -81,43 +109,31 @@ def process_language_extensions(ext, lst, names, tracked):
     # For each language name that currently exists and is loaded,
     # append the extensions to the corresponding settings file
     # if the extension is not already there
+
     for n in names:
-        updated = False
+        # updated = False
         path = os.path.dirname(n)
         name = os.path.basename(n)
-        file_name = name
-        settings_name = name + '.sublime-settings'
-        syntax_file = sublime_format_path('/'.join(['Packages', path, file_name]))
+        syntax_file = sublime_format_path('/'.join(['Packages', path, name]))
         if syntax_file in lst:
-            devlog("Checking %s Extensions..." % n)
-            lang_settings = sublime.load_settings(settings_name)
-            lang_ext = set(lang_settings.get("extensions", []))
-            apsy_ext = set(lang_settings.get("apply_syntax_extensions", []))
-
-            # Update settings file with extensions
             for e in ext:
-                if e not in lang_ext:
-                    # Append extension to current sublime extension list
-                    lang_ext.add(e)
-                    # Track which extensions were specifically added by apply syntax
-                    apsy_ext.add(e)
-                    updated = True
-                # Track the extensions found for the syntax file
-                tracked[name].add(e)
+                if e in ext_map:
+                    ext_map[e].append(name)
+                else:
+                    ext_map[e] = [name]
 
-            if updated:
-                devlog("Updated Extensions: %s" % str(lang_ext))
-                lang_settings.set("extensions", list(lang_ext))
-                lang_settings.set("apply_syntax_extensions", list(apsy_ext))
-                sublime.save_settings(settings_name)
+        for ext, languages in ext_map.items():
+            lang = languages[-1]
+            ext_map[ext] = [lang]
+            ext_added[lang].add(ext)
 
 
-def prune_language_extensions(tracked):
+def prune_language_extensions(ext_map, ext_added):
     """
     Prune dead extensions that were added by ApplySyntax (AS),
     but are no longer defined in AS
 
-    ext         - sublime's extension list for the given language
+    exts        - sublime's extension list for the given language
     old_ext     - The current saved list of AS added extension
     new_ext     - The current tracked list of extensions found defined by AS
     bad_ext     - (old_ext - new_ext) Extensions that were added by AS but are no longer defined
@@ -125,19 +141,28 @@ def prune_language_extensions(tracked):
     """
 
     devlog("Prunning Extensions")
-    for name, new_ext in tracked.items():
+    for name, new_ext in ext_added.items():
         updated = False
-        settings_name = name + '.sublime-settings'
-        lang_settings = sublime.load_settings(settings_name)
-        ext = set(lang_settings.get("extensions", []))
+        settings_file = name + '.sublime-settings'
+        lang_settings = sublime.load_settings(settings_file)
+        exts = set(lang_settings.get("extensions", []))
         old_ext = set(lang_settings.get("apply_syntax_extensions", []))
 
         # Calculate the correct extension list
         bad_ext = old_ext.difference(new_ext)
-        updated_ext = ext.difference(bad_ext)
+        updated_ext = exts.difference(bad_ext)
+
+        # Remove extension from file it ApplySyntax added
+        # it to a different file
+        for ext in list(updated_ext):
+            try:
+                if ext_map[ext][-1] != name:
+                    updated_ext.remove(ext)
+            except:
+                pass
 
         # Update settings file if necessary
-        if len(updated_ext) != len(ext):
+        if len(updated_ext) != len(exts):
             # Update pruned list
             lang_settings.set("extensions", list(updated_ext))
             if len(new_ext) == 0:
@@ -147,9 +172,11 @@ def prune_language_extensions(tracked):
                 # Updated with relevant AS extensions
                 lang_settings.set("apply_syntax_extensions", list(new_ext))
             updated = True
+
         if updated:
+            devlog("============" + settings_file + "============")
             devlog("Pruned Extensions: %s" % str(bad_ext))
-            sublime.save_settings(settings_name)
+            sublime.save_settings(settings_file)
 
 
 def update_extenstions(lst):
@@ -161,7 +188,8 @@ def update_extenstions(lst):
     devlog("Updating Extensions")
 
     # Prepare a list to track extensions defined by ApplySyntax
-    tracked = dict([(os.path.splitext(os.path.basename(l))[0], set()) for l in lst])
+    ext_added = dict([(os.path.splitext(os.path.basename(l))[0], set()) for l in lst])
+    ext_map = {}
 
     # Walk the entries
     for entry in SETTINGS.get("default_syntaxes") + SETTINGS.get("syntaxes"):
@@ -173,10 +201,13 @@ def update_extenstions(lst):
 
         # Add the extensions to the relevant language settings file
         if len(ext):
-            devlog("Found Extensions: %s" % str(ext))
-            process_language_extensions(ext, lst, entry.get("name"), tracked)
+            name = entry.get("name")
+            devlog("Found Extensions: %s - %s" % (name, str(ext)))
+            map_extensions(ext, lst, name, ext_map, ext_added)
 
-    prune_language_extensions(tracked)
+    update_language_extensions(ext_added)
+
+    prune_language_extensions(ext_map, ext_added)
 
 
 def log(msg):
@@ -464,16 +495,16 @@ def on_reload():
     """
 
     if not SETTINGS.get("add_exts_to_lang_settings", False):
-        tracked = dict(
+        ext_added = dict(
             [(os.path.splitext(os.path.basename(l))[0], set()) for l in get_lang_hash()[1]]
         )
-        prune_language_extensions(tracked)
+        ext_map = {}
         devlog("Skipping Extension Update")
-        return
-
-    global LANG_HASH
-    LANG_HASH, lang_list = get_lang_hash()
-    update_extenstions(lang_list)
+        prune_language_extensions(ext_map, ext_added)
+    else:
+        global LANG_HASH
+        LANG_HASH, lang_list = get_lang_hash()
+        update_extenstions(lang_list)
 
 
 def plugin_loaded():
