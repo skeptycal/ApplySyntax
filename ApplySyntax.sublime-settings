@@ -55,7 +55,7 @@
     // to try and track when obsolete ApplySyntax extensions should be removed.
     // Do not manually remove "apply_syntax_extensions" from the settings file.
     // "extenstions" rules are ignored by "match": "all" setting.
-    "add_exts_to_lang_settings": false,
+    "add_exts_to_lang_settings": true,
 
     "default_syntaxes": [
         {
@@ -84,8 +84,7 @@
             // in .rb and will be identified as Rails or Ruby otherwise.
             "name": "Cucumber/Cucumber Steps",
             "rules": [
-                {"file_name": ".*steps\\.rb$"},
-                {"extensions": ["steps.rb"]}
+                {"file_name": ".*steps\\.rb$"}
             ]
         },
         {
@@ -120,20 +119,21 @@
         {
             "name": "Ruby/Ruby",
             "rules": [
-                {"file_name": ".*\\Gemfile$"},
-                {"file_name": ".*\\Capfile$"},
-                {"file_name": ".*\\Guardfile$"},
-                {"file_name": ".*\\[Rr]akefile$"},
-                {"file_name": ".*\\Vagrantfile(\\..*)?$"},
-                {"file_name": ".*\\Berksfile$"},
-                {"file_name": ".*\\Thorfile$"},
+                {"file_name": ".*(\\\\|/)Gemfile$"},
+                {"file_name": ".*(\\\\|/)Capfile$"},
+                {"file_name": ".*(\\\\|/)Guardfile$"},
+                {"file_name": ".*(\\\\|/)[Rr]akefile$"},
+                {"file_name": ".*(\\\\|/)Berksfile$"},
+                {"file_name": ".*(\\\\|/)Thorfile$"},
+                {"file_name": ".*(\\\\|/)Podfile$"},
+                {"file_name": ".*(\\\\|/)config.ru$"},
+                {"file_name": ".*\\\\Vagrantfile(\\\\..*)?$"},
+                {"file_name": ".*/Vagrantfile(/..*)?$"},
                 {"file_name": ".*\\.thor$"},
-                {"file_name": ".*\\config.ru$"},
                 {"file_name": ".*\\.rake$"},
                 {"file_name": ".*\\.simplecov$"},
                 {"file_name": ".*\\.jbuilder$"},
                 {"file_name": ".*\\.rb$"},
-                {"file_name": ".*\\Podfile$"},
                 {"file_name": ".*\\.podspec$"},
                 {"file_name": ".*\\.rabl$"},
                 // A binary rule does the same thing as a "first_line" rule that uses
@@ -160,8 +160,7 @@
         //     "match": "all",
         //     "rules": [
         //         {"binary": "ruby"},
-        //         {"file_name": ".*\\.ruby$"},
-        //         {"extensions": ["ruby"]}
+        //         {"file_name": ".*\\.ruby$"}
         //     ]
         // },
         // {
@@ -199,7 +198,8 @@
         {
             "name": "Blade/Blade",
             "rules": [
-                {"file_name": ".*\\.blade.php$"}
+                {"file_name": ".*\\.blade.php$"},
+                {"extensions": "blade.php"}
             ]
         },
         {
@@ -222,7 +222,7 @@
             "rules": [
                 {"file_name": ".*\\.gemrc$"},
                 {"file_name": ".*\\.yml(\\.dist)?$"},
-                {"extensions": ["gemrc", "yml", "yml.dist"]}
+                {"extensions": [".gemrc", "yml", "yml.dist"]}
             ]
         },
         {
@@ -235,7 +235,7 @@
                 {"file_name": ".*\\.(gitattributes|gitconfig|gitignore)$"},
                 {"file_name": ".*\\.ini(\\.dist)?$"},
                 {"file_name": ".*\\.npmrc$"},
-                {"extensions": ["gitattributes", "gitconfig", "gitignore", "ini.dist", "npmrc"]}
+                {"extensions": [".gitattributes", ".gitconfig", ".gitignore", "ini.dist", ".npmrc"]}
             ]
         },
         {
@@ -255,8 +255,7 @@
             // Apache files correctly, but I leave it for instructional value
             "name": "Apache/Apache",
             "rules": [
-                {"file_name": "^.*(\\.htaccess|\\.htgroups|\\.htpasswd|httpd\\.conf)$"},
-                {"extensions": ["htaccess", "htgroups", "htpasswd", "httpd.conf"]}
+                {"file_name": "^.*(\\.htaccess|\\.htgroups|\\.htpasswd|httpd\\.conf)$"}
             ]
         },
         {

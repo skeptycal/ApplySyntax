@@ -24,6 +24,7 @@ DEFAULT_SETTINGS = '''
 PLUGIN_NAME = 'ApplySyntax'
 PLUGIN_DIR = "Packages/%s" % PLUGIN_NAME
 PLUGIN_SETTINGS = PLUGIN_NAME + '.sublime-settings'
+EXT_SETTINGS = PLUGIN_NAME + ".ext-list"
 SETTINGS = {}
 LANG_HASH = 0
 
@@ -78,8 +79,9 @@ def update_language_extensions(ext_added):
         updated = False
         settings_file = lang + ".sublime-settings"
         lang_settings = sublime.load_settings(settings_file)
+        extension_file = sublime.load_settings(EXT_SETTINGS)
         lang_ext = set(lang_settings.get("extensions", []))
-        apsy_ext = set(lang_settings.get("apply_syntax_extensions", []))
+        apsy_ext = set(extension_file.get(lang, []))
 
         for ext in list(exts):
             if ext not in lang_ext:
@@ -93,8 +95,12 @@ def update_language_extensions(ext_added):
             devlog("============" + settings_file + "============")
             devlog("Updated Extensions: %s" % str(lang_ext))
             lang_settings.set("extensions", list(lang_ext))
-            lang_settings.set("apply_syntax_extensions", list(apsy_ext))
+            if len(apsy_ext):
+                extension_file.set(lang, list(apsy_ext))
+            else:
+                extension_file.erase(lang)
             sublime.save_settings(settings_file)
+            sublime.save_settings(EXT_SETTINGS)
 
 
 def map_extensions(ext, lst, names, ext_map, ext_added):
@@ -145,8 +151,9 @@ def prune_language_extensions(ext_map, ext_added):
         updated = False
         settings_file = name + '.sublime-settings'
         lang_settings = sublime.load_settings(settings_file)
+        extension_file = sublime.load_settings(EXT_SETTINGS)
         exts = set(lang_settings.get("extensions", []))
-        old_ext = set(lang_settings.get("apply_syntax_extensions", []))
+        old_ext = set(extension_file.get(name, []))
 
         # Calculate the correct extension list
         bad_ext = old_ext.difference(new_ext)
@@ -167,16 +174,17 @@ def prune_language_extensions(ext_map, ext_added):
             lang_settings.set("extensions", list(updated_ext))
             if len(new_ext) == 0:
                 # No currently added extensions by AS
-                lang_settings.erase("apply_syntax_extensions")
+                extension_file.erase(name)
             else:
                 # Updated with relevant AS extensions
-                lang_settings.set("apply_syntax_extensions", list(new_ext))
+                extension_file.set(name, list(new_ext))
             updated = True
 
         if updated:
             devlog("============" + settings_file + "============")
             devlog("Pruned Extensions: %s" % str(bad_ext))
             sublime.save_settings(settings_file)
+            sublime.save_settings(EXT_SETTINGS)
 
 
 def update_extenstions(lst):
