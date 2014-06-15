@@ -89,7 +89,7 @@
         },
         {
             // One could use just the second rule to match every ruby file in a /spec/
-            // directory, but I prefer to more explicit.
+            // directory, but I prefer to be more explicit.
             "name": ["RSpec/RSpec", "RSpec (snippets and syntax)/Syntaxes/RSpec", "Better RSpec/Better RSpec"],
             "rules": [
                 {"file_name": ".*spec\\.rb$"},
