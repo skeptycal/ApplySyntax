@@ -54,7 +54,7 @@
     // ApplySyntax will log the extensions it adds under "apply_syntax_extensions"
     // to try and track when obsolete ApplySyntax extensions should be removed.
     // Do not manually remove "apply_syntax_extensions" from the settings file.
-    // "extenstions" rules are ignored by "match": "all" setting.
+    // "extenstions" are ignored by "match": "all" setting.
     "add_exts_to_lang_settings": true,
 
     "default_syntaxes": [
@@ -63,6 +63,7 @@
             // that this rule will result in a false positive, meaning if it
             // matches, you probably want the XML syntax
             "name": "XML/XML",
+            "extensions": ["xml.dist"],
             "rules": [
                 {"file_name": ".*\\.xml(\\.dist)?$"},
                 {"first_line": "^<\\?xml"},
@@ -72,11 +73,10 @@
                 //
                 // "name": "XML/XML",
                 // "rules": [
-                //     {"first_line": "^<\\?xml"},
-                //     {"extensions": ["xml.dist"]}
-                // ]
+                //     {"first_line": "^<\\?xml"}
+                // ],
+                // "extensions": ["xml.dist"]
                 //
-                {"extensions": ["xml.dist"]}
             ]
         },
         {
@@ -101,9 +101,9 @@
             // This rule could be incorporated into the next one, but I prefer to be
             // more explicit rather than less
             "name": "Rails/Ruby Haml",
+            "extensions": ["haml"],
             "rules": [
-                {"file_name": ".*\\.haml$"},
-                {"extensions": ["haml"]}
+                {"file_name": ".*\\.haml$"}
             ]
         },
         {
@@ -118,6 +118,7 @@
         },
         {
             "name": "Ruby/Ruby",
+            "extensions": ["thor", "rake", "simplecov", "jbuilder", "rb", "podspec", "rabl"],
             "rules": [
                 {"file_name": ".*(\\\\|/)Gemfile$"},
                 {"file_name": ".*(\\\\|/)Capfile$"},
@@ -146,8 +147,7 @@
                 //
                 //      {"first_line": "^#\\!(?:.+)ruby"}
                 //
-                {"binary": "ruby"},
-                {"extensions": ["thor", "rake", "simplecov", "jbuilder", "rb", "podspec", "rabl"]}
+                {"binary": "ruby"}
             ]
         },
         // {
@@ -190,64 +190,64 @@
         {
             // Emblem syntax matches Ruby Slim
             "name": "Ruby Slim/Syntaxes/Ruby Slim",
+            "extensions": ["emblem"],
             "rules": [
-                {"file_name": ".*\\.emblem$"},
-                {"extensions": ["emblem"]}
+                {"file_name": ".*\\.emblem$"}
             ]
         },
         {
             "name": "Blade/Blade",
+            "extensions": ["blade.php"],
             "rules": [
-                {"file_name": ".*\\.blade.php$"},
-                {"extensions": "blade.php"}
+                {"file_name": ".*\\.blade.php$"}
             ]
         },
         {
             "name": "PHP/PHP",
+            "extensions": ["php3", "php4", "php5", "inc", "phtml"],
             "rules": [
                 {"file_name": ".*\\.(php(3|4|5)?|inc|phtml)$"},
-                {"first_line": "^<\\?php"},
-                {"extensions": ["php3", "php4", "php5", "inc", "phtml"]}
+                {"first_line": "^<\\?php"}
             ]
         },
         {
             "name": "PHP/Smarty",
+            "extensions": ["tpl"],
             "rules": [
-                {"file_name": ".*\\.tpl$"},
-                {"extensions": ["tpl"]}
+                {"file_name": ".*\\.tpl$"}
             ]
         },
         {
             "name": "YAML/YAML",
+            "extensions": [".gemrc", "yml", "yml.dist"],
             "rules": [
                 {"file_name": ".*\\.gemrc$"},
-                {"file_name": ".*\\.yml(\\.dist)?$"},
-                {"extensions": [".gemrc", "yml", "yml.dist"]}
+                {"file_name": ".*\\.yml(\\.dist)?$"}
             ]
         },
         {
             // This rule requires the INI plugin to be installed (via Package Control
             // or https://github.com/clintberry/sublime-text-2-ini)
             "name": "INI/INI",
+            "extensions": [".gitattributes", ".gitconfig", ".gitignore", "ini.dist", ".npmrc"],
             "rules": [
                 {"file_name": ".*/git/(attributes|config|ignore)$"},
                 {"file_name": ".*\\\\git\\\\(attributes|config|ignore)$"},
                 {"file_name": ".*\\.(gitattributes|gitconfig|gitignore)$"},
                 {"file_name": ".*\\.ini(\\.dist)?$"},
-                {"file_name": ".*\\.npmrc$"},
-                {"extensions": [".gitattributes", ".gitconfig", ".gitignore", "ini.dist", ".npmrc"]}
+                {"file_name": ".*\\.npmrc$"}
             ]
         },
         {
             "name": "ShellScript/Shell-Unix-Generic",
+            "extensions": ["bash", "sh", "zsh"],
             "rules": [
                 {"file_name": "profile"},
                 {"file_name": ".*\\.bash.*$"},
                 {"file_name": ".*\\.z(shrc|shenv|profile|login|logout).*$"},
                 {"file_name": ".*\\.(bash|sh|zsh)$"},
                 {"binary": "bash"},
-                {"binary": "zsh"},
-                {"extensions": ["bash", "sh", "zsh"]}
+                {"binary": "zsh"}
             ]
         },
         {
@@ -262,10 +262,10 @@
             // Sublime recognizes .py files, but not if they don't have an extension,
             // just a shebang
             "name": "Python/Python",
+            "extensions": ["py3", "pyw"],
             "rules": [
                 {"file_name": ".*\\.(py|pyw|py3)"},
-                {"binary": "python"},
-                {"extensions": ["py3", "pyw"]}
+                {"binary": "python"}
             ]
         }
     ]

@@ -203,9 +203,8 @@ def update_extenstions(lst):
     for entry in SETTINGS.get("default_syntaxes") + SETTINGS.get("syntaxes"):
         # Grab the extensions from each relevant rule
         ext = []
-        for rule in entry.get("rules", []):
-            if "extensions" in rule:
-                ext += rule.get("extensions", [])
+        if "extensions" in entry:
+            ext += entry.get("extensions", [])
 
         # Add the extensions to the relevant language settings file
         if len(ext):
@@ -379,7 +378,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         self.syntaxes = project_syntaxes + user_syntaxes + default_syntaxes
 
     def syntax_matches(self, syntax):
-        rules = syntax.get("rules")
+        rules = syntax.get("rules", [])
         match_all = syntax.get("match") == 'all'
 
         for rule in rules:
