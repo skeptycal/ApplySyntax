@@ -200,7 +200,7 @@ def update_extenstions(lst):
     ext_map = {}
 
     # Walk the entries
-    for entry in SETTINGS.get("default_syntaxes") + SETTINGS.get("syntaxes"):
+    for entry in SETTINGS.get("default_syntaxes", []) + SETTINGS.get("syntaxes", []):
         # Grab the extensions from each relevant rule
         ext = []
         if "extensions" in entry:
