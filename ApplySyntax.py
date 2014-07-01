@@ -96,9 +96,9 @@ def update_language_extensions(ext_added):
             devlog("Updated Extensions: %s" % str(lang_ext))
             lang_settings.set("extensions", list(lang_ext))
             if len(apsy_ext):
-                extension_file.set(lang, list(apsy_ext))
+                extension_file.set(lang, sorted(list(apsy_ext)))
             else:
-                extension_file.erase(lang)
+                extension_file.erase(sorted(lang))
             sublime.save_settings(settings_file)
             sublime.save_settings(EXT_SETTINGS)
 
@@ -171,13 +171,13 @@ def prune_language_extensions(ext_map, ext_added):
         # Update settings file if necessary
         if len(updated_ext) != len(exts):
             # Update pruned list
-            lang_settings.set("extensions", list(updated_ext))
+            lang_settings.set("extensions", sorted(list(updated_ext)))
             if len(new_ext) == 0:
                 # No currently added extensions by AS
                 extension_file.erase(name)
             else:
                 # Updated with relevant AS extensions
-                extension_file.set(name, list(new_ext))
+                extension_file.set(name, sorted(list(new_ext)))
             updated = True
 
         if updated:
