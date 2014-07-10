@@ -267,6 +267,12 @@
                 {"file_name": ".*\\.(py|pyw|py3)"},
                 {"binary": "python"}
             ]
+        },
+        {
+            "name": "JavaScript/JSON",
+            "rules": [
+                {"file_name": "^.*(\\.jshintrc|\\.jscsrc|\\.csslintrc)$"}
+            ]
         }
     ]
 }
