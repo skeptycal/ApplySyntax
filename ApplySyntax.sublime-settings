@@ -98,6 +98,13 @@
             ]
         },
         {
+            // Seems must other will make .html.erb as HTML files
+            "name": "Rails/HTML (Rails)",
+            "rules": [
+                {"file_name": ".*\\.html\\.erb$"}
+            ]
+        },
+        {
             // This rule could be incorporated into the next one, but I prefer to be
             // more explicit rather than less
             "name": "Rails/Ruby Haml",
