@@ -4,11 +4,11 @@ ApplySyntax is a plugin for Sublime Text 2 and 3 that allows you to detect and a
 # Credits
 DetectSyntax was originally created by phillipkoebbe.  In his words, these are his credits:
 
-> It all started by forking the plugin created by JeanMertz (1). I modified it quite extensively until I ended up with something entirely my own (2). @maxim and @omarramos commented on the gist and suggested it should be part of Package Control. As I had created it solely for my own consumption, it seemed a bit "hard-coded" to be valuable as a package, but then I took a look at SetSyntax (3) and saw how using settings would make it very flexible. That set me on the path that led to DetectSyntax.
-> 
-> (1) [https://gist.github.com/925008](https://gist.github.com/925008)
-> (2) [https://gist.github.com/1497794](https://gist.github.com/1497794)
-> (3) [https://github.com/aparajita/SetSyntax](https://github.com/aparajita/SetSyntax)
+> It all started by forking the plugin created by JeanMertz [(1)][1]. I modified it quite extensively until I ended up with something entirely my own [(2)][2]. @maxim and @omarramos commented on the gist and suggested it should be part of Package Control. As I had created it solely for my own consumption, it seemed a bit "hard-coded" to be valuable as a package, but then I took a look at SetSyntax [(3)][3]. and saw how using settings would make it very flexible. That set me on the path that led to DetectSyntax.
+
+[1]: https://gist.github.com/925008
+[2]: https://gist.github.com/1497794
+[3]: https://github.com/aparajita/SetSyntax
 
 # Installation
 ApplySyntax can be installed in a variety of ways:

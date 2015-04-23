@@ -29,7 +29,7 @@ If it is desirable for the syntax rule to reference multiple tmLanguage files be
 
 Apply sytnax will create a file `ApplySyntax.ext-list` in your `User` folder and track which extension it added so that if you remove a rule, ApplySyntax will only remove the extensions it added to the language file in question.
 
-If you do not like this functionality, you can simply disable it by setting the following option in your settings file to `#!js false`:
+If you do not like this functionality, you can simply disable it by setting the following option in your settings file to `false`:
 
 ```js
     "add_exts_to_lang_settings": true,
@@ -116,9 +116,9 @@ Can be simplified as:
 ```
 
 ### Function Rule
-This is an example of using a custom function to decide whether or not to apply this syntax. The source file should be in a plugin folder. `name` is the function name and `source` is the file in which the function is contained; you must include the package it resides in, all subfolders leading to the file, and the actual file name (extension not needed).
+This is an example of using a custom function to decide whether or not to apply this syntax. The source file should be in a plugin folder. `name` is the function name and `source` is the file in which the function is contained; you must include the package it resides in, all sub-folders leading to the file, and the actual file name (extension not needed).
 
-When this function is called, the filename will be passed to it as the only argument. You are free to do whatever you want in your function, just return `#!python` True or `#!python False`.  But please be consience of keeping it quick and light if possible.
+When this function is called, the filename will be passed to it as the only argument. You are free to do whatever you want in your function, just return `True` or `False`.  But please be conscious of keeping it quick and light if possible.
 
 ```js
 {"function": {"name": "is_rails_file", "source": "ApplySyntax/is_rails_file"}}
@@ -136,22 +136,29 @@ Sometimes a filename or first line search is just not enough and maybe a functio
 
     Also, try to use very specific regex to ensure you don't get false positives.
 
+### Project Specific Rules
+To define project specific syntaxes just add `project_syntaxes` to your project file.  `project_syntaxes` is an array; just add your syntax rules to it, and ApplySyntax will append the rules to the end of your globally defined rules.
+
 ## Settings Options
+There are a couple of general settings found in `ApplySyntax.sublime-settings.
+
+### Re-Raise Exceptions
+If an exception occurs when processing a function, should it be re-raised so the user gets feedback? This is really only useful to those writing functions. The average user just wants the plugin to work.  By default, this will be set to `false`.
 
 ```js
-    // If you want to have a syntax applied when new files are created, set
-    // "new_file_syntax" to the name of the syntax to use. The format is exactly the
-    // same as "name" in the rules below. For example, if you want to have a new
-    // file use JavaScript syntax, set "new_file_syntax" to 'JavaScript'.
-    "new_file_syntax": false,
-    // Auto add extensions to language settings file in User folder.  This changes the
-    // default syntax for a file extension.  Keep in mind though that other rules can
-    // override this. By adding the extension to the language settings file, sidebar
-    // icons in ST3 will display proper icon for the syntax it will load with
-    // (assuming another rule doesn't override the syntax it loads with).
-    // ApplySyntax will log the extensions it adds under "apply_syntax_extensions"
-    // to try and track when obsolete ApplySyntax extensions should be removed.
-    // Do not manually remove "apply_syntax_extensions" from the settings file.
-    // "extenstions" are ignored by "match": "all" setting.
+    "reraise_exceptions": false,
+```
+
+### New File Syntax
+If you want to have a syntax applied when new files are created, set `new_file_syntax` to the name of the syntax to use. The format is exactly the same as the `name` parameter in the syntax rules mentioned earlier. For example, if you want to have a new file use JavaScript syntax, set `new_file_syntax` to `JavaScript/JavaScript`.  The default is `false`.
+
+```js
+    "new_file_syntax": "JavaScript/JavaScript",
+```
+
+### Add Extensions to Language Settings
+To enable adding defined extensions to language settings, just set `add_exts_to_lang_settings` to `true`.  See [Extensions](#extensions) for more info.
+
+```js
     "add_exts_to_lang_settings": true,
 ```
