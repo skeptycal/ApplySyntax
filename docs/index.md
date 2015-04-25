@@ -31,6 +31,3 @@ ApplySyntax can be installed in a variety of ways:
     - `git clone git://github.com/facelessuser/ApplySyntax.git`
 
 * By downloading the files and placing them in a directory under `Packages/ApplySyntax`. If you download and extract a compressed archive from GitHub, the directory will be `facelessuser-ApplySyntax`. Remove `facelessuser-`.
-
-# Documentation
-http://facelessuser.github.io/ApplySyntax/
