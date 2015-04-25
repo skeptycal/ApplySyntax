@@ -1,4 +1,10 @@
-# Usage
+# User Guide {: .doctitle}
+Configuring and using ApplySyntax.
+{: .doctitle-info}
+
+---
+
+# Overview
 ApplySyntax is based on the idea of creating rules for selecting a certain syntax. You define the rules, the plugin checks them. The first one to pass wins.
 
 Create your own custom rules in `Packages/User/ApplySyntax.sublime-settings`. The easiest way to get started is to just copy the default settings file found in `Packages/ApplySyntax/ApplySyntax.sublime-settings` to your `Packages/User` directory and modify it to meet your needs. Make sure you rename the `default_syntaxes` key to just syntaxes. If you don't, you will overwrite the default syntaxes and they will not work.
@@ -7,7 +13,7 @@ See the default settings file for examples.
 
 # Creating Rules
 
-Each rule is a dictionary within the syntax array.  Let's take a look at the top level parameters:
+Each rule is a dictionary within the syntax array.  Let's take a look at the top level parameters.
 
 ## Name
 `name` is the syntax file that will be applied to a view which meets the criteria defined in the rule.
@@ -25,9 +31,9 @@ If it is desirable for the syntax rule to reference multiple tmLanguage files be
 ```
 
 ## Extensions
-`extensions` is a convienance option to add a given set of extensions to your language settings file.  By adding the extension to the language settings file, sidebar icons in ST3 will display the proper icon and files will load with the proper syntax via Sublime's default extention detection method.  Keep in mind though that other rules can override this.  As `extensions` isn't really a rule, but just a list that automatically adds the extension to the langauge settings file, a hit on this array won't currently stop ApplySyntax from processing more rules (this may change in the future).
+`extensions` is a convenience option to add a given set of extensions to your language settings file.  By adding the extension to the language settings file, sidebar icons in ST3 will display the proper icon and files will load with the proper syntax via Sublime's default extension detection method.  Keep in mind though that other rules can override this.  As `extensions` isn't really a rule, but just a list that automatically adds the extension to the language settings file, a hit on this array won't currently stop ApplySyntax from processing more rules (this may change in the future).
 
-Apply sytnax will create a file `ApplySyntax.ext-list` in your `User` folder and track which extension it added so that if you remove a rule, ApplySyntax will only remove the extensions it added to the language file in question.
+Apply syntax will create a file `ApplySyntax.ext-list` in your `User` folder and track which extension it added so that if you remove a rule, ApplySyntax will only remove the extensions it added to the language file in question.
 
 If you do not like this functionality, you can simply disable it by setting the following option in your settings file to `false`:
 
