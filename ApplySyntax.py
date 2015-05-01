@@ -21,10 +21,12 @@ DEFAULT_SETTINGS = '''
 }
 '''
 
+USE_ST_SYNTAX = int(sublime.version()) >= 3084
 PLUGIN_NAME = 'ApplySyntax'
 PLUGIN_DIR = "Packages/%s" % PLUGIN_NAME
 PLUGIN_SETTINGS = PLUGIN_NAME + '.sublime-settings'
 EXT_SETTINGS = PLUGIN_NAME + ".ext-list"
+ST_LANGUAGES = ('.sublime-syntax', '.tmLanguage') if USE_ST_SYNTAX else ('.tmlanguage',)
 SETTINGS = {}
 LANG_HASH = 0
 
@@ -46,6 +48,15 @@ def ensure_user_settings():
         f.write(DEFAULT_SETTINGS)
 
 
+def get_all_syntax_files():
+    """ Find all sublime-syntax and tmLanguage files. """
+    syntax_files = []
+    if USE_ST_SYNTAX:
+        syntax_files += sublime.find_resources("*.sublime-syntax")
+    syntax_files += sublime.find_resources("*.tmLanguage")
+    return syntax_files
+
+
 def sublime_format_path(pth):
     """
     Format the path for the sublime API
@@ -63,8 +74,19 @@ def get_lang_hash():
     Return the actual language frozenset (hashable) as well.
     """
 
+    def was_seen(item, item_set):
+        seen_item = True
+        base = os.path.splitext(item)[0]
+        if base is not item_set:
+            item_set.add(base)
+            seen_item = False
+        return seen_item
+
     # Strip off tmlanguage so we don't have to worry about case of extension
-    lst = frozenset([os.path.splitext(x)[0] for x in sublime.find_resources("*.tmLanguage")])
+    seen = set()
+    lst = frozenset(
+        [os.path.splitext(x)[0] for x in get_all_syntax_files() if not was_seen(x, seen)]
+    )
     hsh = hash(lst)
     devlog("Language Hash - '%s'" % str(hsh))
     return hsh, lst
@@ -208,7 +230,7 @@ def update_extenstions(lst):
 
         # Add the extensions to the relevant language settings file
         if len(ext):
-            name = entry.get("name")
+            name = os.path.splitext(entry.get("name"))[0]
             devlog("Found Extensions: %s - %s" % (name, str(ext)))
             map_extensions(ext, lst, name, ext_map, ext_added)
 
@@ -341,30 +363,35 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         else:
             names = name
         for n in names:
-            path = os.path.dirname(n)
-            name = os.path.basename(n)
+            for ext in ST_LANGUAGES:
+                path = os.path.dirname(n)
+                if not path:
+                    continue
 
-            if not path:
-                continue
+                lang_ext = os.path.splitext(n)[1]
+                if lang_ext and lang_ext in ST_LANGUAGES:
+                    if lang_ext != ext:
+                        continue
 
-            file_name = name + '.tmLanguage'
-            new_syntax = sublime_format_path('/'.join(['Packages', path, file_name]))
+                name = os.path.splitext(os.path.basename(n))[0]
+                file_name = name + ext
+                new_syntax = sublime_format_path('/'.join(['Packages', path, file_name]))
 
-            current_syntax = self.view.settings().get('syntax')
+                current_syntax = self.view.settings().get('syntax')
 
-            # only set the syntax if it's different
-            if new_syntax != current_syntax:
-                # let's make sure it exists first!
-                try:
-                    sublime.load_resource(new_syntax)
-                    self.view.set_syntax_file(new_syntax)
-                    debug('Syntax set to ' + name + ' using ' + new_syntax)
+                # only set the syntax if it's different
+                if new_syntax != current_syntax:
+                    # let's make sure it exists first!
+                    try:
+                        sublime.load_resource(new_syntax)
+                        self.view.set_syntax_file(new_syntax)
+                        debug('Syntax set to ' + name + ' using ' + new_syntax)
+                        break
+                    except:
+                        debug('Syntax file for ' + name + ' does not exist at ' + new_syntax)
+                else:
+                    debug('Syntax already set to ' + new_syntax)
                     break
-                except:
-                    debug('Syntax file for ' + name + ' does not exist at ' + new_syntax)
-            else:
-                debug('Syntax already set to ' + new_syntax)
-                break
 
     def load_syntaxes(self):
         self.reraise_exceptions = SETTINGS.get("reraise_exceptions")
