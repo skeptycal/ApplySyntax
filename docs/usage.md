@@ -19,29 +19,22 @@ Each rule is a dictionary within the syntax array.  Let's take a look at the top
 For syntax files you must specify the path to the syntax file. The plugin is capable of supporting multiple levels of folder nesting if you need it to. For example, if you had all of your tmLanguage files for Rails organized in a folder like this: `Packages/Rails/Language/*.tmLanguage`, and you were looking to use the `Ruby Haml.tmLanguage` file, you would define the syntax to be:
 
 ```js
-"name": "Rails/Language/Ruby Haml.tmLanguage"
+"name": "Rails/Language/Ruby Haml"
 ```
 
-Notice that the paths are relative to the `Packages` folder.
+Notice that the paths are relative to the `Packages` folder.  Also, notice that we don't specify the extension.  Sublime Text in build 3084 added a new language syntax with the extension `sublime-syntax`.  ApplySyntax will first default to `sublime-syntax` and fall back to `tmLanguage` if it cannot find the the other format.  If you want to force the syntax, just specify the extension; the extension must be either `sublime-syntax` or `tmlanguage`.
+
+```js
+"name": "Rails/Language/Ruby Haml.tmLanguage"
+```
 
 If it is desirable for the syntax rule to reference multiple tmLanguage files because it is not known which package will be on a machine, you can set the syntax as an array of names like:
 
 ```js
-"name": ["RSpec/RSpec.tmLanguage", "RSpec (snippets and syntax)/Syntaxes/RSpec.tmLanguage"]
+"name": ["RSpec/RSpec", "RSpec (snippets and syntax)/Syntaxes/RSpec"]
 ```
 
 Notice that each syntax file has a different path since they come from completely different plugins.
-
-!!! Warning "Deprecation Warning!"
-    ApplySyntax allows a language file to be specified using the following translation:
-
-    `Packages/Rails/Language/Ruby Haml.tmLanguage` --> `Rails/Language/Ruby Haml`
-
-    This behavior is deprecated and will be removed in the future.  From now on, the extension should be specified as:
-
-    `Packages/Rails/Language/Ruby Haml.tmLanguage` --> `Rails/Language/Ruby Haml.tmLanguage`
-
-    This is to allow a user to choose between `tmLanguage` and `sublime-syntax` formats. Before removal occurs, if an extension is not specified, it will try `sublime-syntax` first followed by `tmLanguage`.
 
 ## Extensions
 `extensions` is a convenience option to add a given set of extensions to your language settings file.  By adding the extension to the language settings file, sidebar icons in ST3 will display the proper icon, and files will load with the proper syntax via Sublime's default extension detection method.  Keep in mind though that other rules can override this.  As `extensions` isn't really a rule, but just a list which ApplySyntax uses to automatically add extension to the language settings file.  A hit (match) on this array won't currently stop ApplySyntax from processing more rules (this may change in the future).
@@ -177,10 +170,10 @@ If an exception occurs when processing a function, this will re-raised the captu
 ```
 
 ### New File Syntax
-If you want to have a syntax applied when new files are created, set `new_file_syntax` to the name of the syntax to use. The format is exactly the same as the [`name`](#name) parameter in the syntax rules mentioned earlier. For example, if you want to have a new file use JavaScript syntax, set `new_file_syntax` to `JavaScript/JavaScript.tmLanguage`.  The default is `false`.
+If you want to have a syntax applied when new files are created, set `new_file_syntax` to the name of the syntax to use. The format is exactly the same as the [`name`](#name) parameter in the syntax rules mentioned earlier. For example, if you want to have a new file use JavaScript syntax, set `new_file_syntax` to `JavaScript/JavaScript`.  The default is `false`.
 
 ```js
-    "new_file_syntax": "JavaScript/JavaScript.tmLanguage",
+    "new_file_syntax": "JavaScript/JavaScript",
 ```
 
 ### Add Extensions to Language Settings
