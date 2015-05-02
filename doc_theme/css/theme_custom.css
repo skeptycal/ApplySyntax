@@ -120,6 +120,10 @@
   vertical-align: middle;
 }
 
+.rst-content li>p {
+  margin: 12px;
+}
+
 /* Progress Bars */
 .rst-content .progress {
   display: block;
@@ -421,10 +425,10 @@
   margin-bottom: .2em;
 }
 
-.rst-content .doctitle .headerlink {
-  font-size: 0;
+.rst-content .doctitle+p {
+  text-align: center;
 }
 
-.rst-content .doctitle-info {
-  text-align: center;
+.rst-content .doctitle .headerlink {
+  font-size: 0;
 }

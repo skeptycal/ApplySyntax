@@ -1,6 +1,5 @@
 # User Guide {: .doctitle}
 Configuring and using ApplySyntax.
-{: .doctitle-info}
 
 ---
 

@@ -24,4 +24,3 @@ markdown_extensions:
     pymdownx.tasklist:
     pymdownx.superfences:
     pymdownx.progressbar:
-#- pymdownx.headeranchor
