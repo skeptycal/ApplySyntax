@@ -25,7 +25,7 @@
             "extensions": ["xml.dist"],
             "rules": [
                 {"file_name": ".*\\.xml(\\.dist)?$"},
-                {"first_line": "^<\\?xml"},
+                {"first_line": "^<\\?xml"}
                 // See "add_exts_to_lang_settings" setting above for more info
                 // if using extensions, you don't need to set "file_name".
                 // Rule could be simplified to this:

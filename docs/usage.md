@@ -21,13 +21,13 @@ For syntax files you must specify the path to the syntax file. The plugin is cap
 "name": "Rails/Language/Ruby Haml"
 ```
 
-Notice that the paths are relative to the `Packages` folder.  Also, notice that we don't specify the extension.  Sublime Text in build 3084 added a new language syntax with the extension `sublime-syntax`.  ApplySyntax will first default to `sublime-syntax` and fall back to `tmLanguage` if it cannot find the the other format.  If you want to force the syntax, just specify the extension; the extension must be either `sublime-syntax` or `tmlanguage`.
+Notice that the paths are relative to the `Packages` folder.  Also, notice that we don't specify the extension.  Sublime Text in build 3084 added a new language syntax with the extension `sublime-syntax`.  In Sublime builds >= 3084, ApplySyntax will first default to `sublime-syntax` and fall back to `tmLanguage` if it cannot find the the other format.  If you want to force the syntax, just specify the extension; the extension must be either `sublime-syntax` or `tmlanguage`.
 
 ```js
 "name": "Rails/Language/Ruby Haml.tmLanguage"
 ```
 
-If it is desirable for the syntax rule to reference multiple tmLanguage files because it is not known which package will be on a machine, you can set the syntax as an array of names like:
+If it is desirable for the syntax rule to reference multiple tmLanguage files because it is not known which package will be on a machine, you can set the syntax as an array of names as shown in the following example.  The first one found will be used.
 
 ```js
 "name": ["RSpec/RSpec", "RSpec (snippets and syntax)/Syntaxes/RSpec"]
@@ -153,10 +153,22 @@ Sometimes a filename or first line search is just not enough and maybe a functio
 
     Also, try to use very specific regex to ensure you don't get false positives.
 
-### Project Specific Rules
+## Project Specific Rules
 To define project specific syntaxes, just add `project_syntaxes` to your project file.  `project_syntaxes` is an array; just add your syntax rules to `project_syntaxes` just like you would add them to `syntaxes` in your user settings file, and ApplySyntax will append the rules to the end of your globally defined rules.
 
 There is one difference between project specific rules and global rules.  In project rules, the `extensions` key will be ignored, as the extension feature adds extensions globally, and project specific rules are meant to be confined to the project scope.
+
+```js
+    "project_syntaxes": [
+        {
+            "name": "XML/XML",
+            "rules": [
+                {"file_name": ".*\\.xml(\\.dist)?$"},
+                {"first_line": "^<\\?xml"}
+            ]
+        }
+    ]
+```
 
 ## Settings Options
 There are a couple of general settings found in `ApplySyntax.sublime-settings.
