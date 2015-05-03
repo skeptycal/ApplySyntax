@@ -8,7 +8,6 @@ theme: readthedocs
 theme_dir: doc_theme
 markdown_extensions:
     markdown.extensions.toc:
-        permalink: "\uf0c1"
     markdown.extensions.extra:
     markdown.extensions.admonition:
     markdown.extensions.smarty:
@@ -24,3 +23,4 @@ markdown_extensions:
     pymdownx.tasklist:
     pymdownx.superfences:
     pymdownx.progressbar:
+    pymdownx.headeranchor:
