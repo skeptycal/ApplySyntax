@@ -26,7 +26,7 @@ PLUGIN_NAME = 'ApplySyntax'
 PLUGIN_DIR = "Packages/%s" % PLUGIN_NAME
 PLUGIN_SETTINGS = PLUGIN_NAME + '.sublime-settings'
 EXT_SETTINGS = PLUGIN_NAME + ".ext-list"
-ST_LANGUAGES = ('.sublime-syntax', '.tmLanguage') if USE_ST_SYNTAX else ('.tmlanguage',)
+ST_LANGUAGES = ('.sublime-syntax', '.tmLanguage') if USE_ST_SYNTAX else ('.tmLanguage',)
 SETTINGS = {}
 LANG_HASH = 0
 
