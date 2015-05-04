@@ -15,7 +15,7 @@ Each rule is a dictionary within the syntax array.  Let's take a look at the top
 ## Name
 `name` is the syntax file that will be applied to a view which meets the criteria defined in the rule.
 
-For syntax files you must specify the path to the syntax file. The plugin is capable of supporting multiple levels of folder nesting if you need it to. For example, if you had all of your tmLanguage files for Rails organized in a folder like this: `Packages/Rails/Language/*.tmLanguage`, and you were looking to use the `Ruby Haml.tmLanguage` file, you would define the syntax to be:
+For syntax files you must specify the path to the syntax file. The plugin is capable of supporting multiple levels of folder nesting if you need it to. For example, if you had all of your tmLanguage files for Rails organized in a folder like this: `Packages/Rails/Language/*.tmLanguage`, and you were looking to use the `Ruby Haml.tmLanguage` file, the path to name translation would simply be: `Packages/Rails/Language/Ruby Haml.tmLanguage` -> `Rails/Language/Ruby Haml`.
 
 ```js
 "name": "Rails/Language/Ruby Haml"
