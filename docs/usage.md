@@ -108,7 +108,7 @@ Filename rule defines a filename with regex.  The pattern is matched against the
 ```
 
 ### First Line Rule
-First line rule allows you to check if the first line of the files content matches a given regex.
+First line rule allows you to check if the first line of the files content matches a given regex. The pattern is matched against the beginning of the line (there is an implicit `^`).
 
 ```js
 {"first_line": "^<\\?xml"},
