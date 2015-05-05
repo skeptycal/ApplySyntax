@@ -101,7 +101,7 @@ In this case, there is no `match` key, so only one rule needs to match:
 `rules` is an array of rules that can be used to target specific files with your defined syntax file.  The rules are processed until the first rule matches, so order your rules in a way that makes sense to you.
 
 ### Filename Rule
-Filename rule defines a filename with regex.  This uses the full file path.
+Filename rule defines a filename with regex.  The pattern is matched against the beginning of the full file path (there is an implicit `^`).
 
 ```js
 {"file_name": ".*\\.xml(\\.dist)?$"},
