@@ -8,11 +8,13 @@
     // If you want to have a syntax applied when new files are created, set
     // "new_file_syntax" to the name of the syntax to use. The format is exactly the
     // same as "syntax" in the rules below. For example, if you want to have a new
-    // file use JavaScript syntax, set "new_file_syntax" to 'JavaScript'.
+    // file use JavaScript syntax, set "new_file_syntax" to 'JavaScript/JavaScript'.
     "new_file_syntax": false,
 
     // Auto add extensions to language settings file in User folder.
-    // Do not manually remove "apply_syntax_extensions" from the settings file.
+    // Do not manually remove "ApplySyntax.ext-list" from the User folder
+    // as it is used to track which extensions ApplySyntax added so
+    // they can be removed later if needed.
     // "extenstions" are ignored by "match": "all" setting.
     "add_exts_to_lang_settings": true,
 
@@ -29,16 +31,6 @@
             "extensions": ["xml.dist"],
             "rules": [
                 {"first_line": "^<\\?xml"}
-                // See "add_exts_to_lang_settings" setting above for more info
-                // if using extensions, you don't need to set "file_path".
-                // Rule could be simplified to this:
-                //
-                // "syntax": "XML/XML",
-                // "rules": [
-                //     {"first_line": "^<\\?xml"}
-                // ],
-                // "extensions": ["xml.dist"]
-                //
             ]
         },
         {
@@ -64,22 +56,20 @@
             ]
         },
         {
-            // Seems must other will make .html.erb as HTML files
+            // Will make .html.erb as HTML files
             "syntax": "Rails/HTML (Rails)",
             "rules": [
                 {"file_path": ".*\\.html\\.erb$"}
             ]
         },
         {
-            // This rule could be incorporated into the next one, but I prefer to be
-            // more explicit rather than less
             "syntax": "Rails/Ruby Haml",
             "extensions": ["haml"]
         },
         {
             // This is an example of using a custom function to decide whether or
             // not to apply this syntax. The source file should be in a plugin folder.
-            // "syntax" is the function name and "source" is the file in which the
+            // "name" is the function name and "source" is the file in which the
             // function is contained. The rule should be specified as such.
             "syntax": "Rails/Ruby on Rails",
             "rules": [
@@ -101,49 +91,18 @@
                 {"file_path": ".*(\\\\|/)config.ru$"},
                 {"file_path": ".*\\\\Vagrantfile(\\\\..*)?$"},
                 {"file_path": ".*/Vagrantfile(/..*)?$"},
-                // A interpreter rule does the same thing as a "first_line" rule that uses
-                // a regexp to match a shebang, the difference being ApplySyntax
-                // will construct the regexp and the user doesn't have to. So
-                //
-                //      {"interpreter": "ruby"}
-                //
-                // is functionally equivalent to
-                //
+                // Interpreter is a short hand way of doing:
                 //      {"first_line": "^#\\!(?:.+)ruby"}
-                //
                 {"interpreter": "ruby"}
             ]
         },
-        // {
-        //     // This is an example of having to match all rules. Here, the file needs to
-        //     // have a ruby shebang *and* end in .ruby. If "match"=="all", ApplySyntax
-        //     // will set the named syntax only if all rules match ("extenstions" rules
-        //     // are ignored by "match"=="all". If "match" is anything other than "all",
-        //     // the syntax will be set if any rule matches (the normal behavior)
-        //     "syntax": "Ruby/Ruby",
-        //     "match": "all",
-        //     "rules": [
-        //         {"interpreter": "ruby"},
-        //         {"file_path": ".*\\.ruby$"}
-        //     ]
-        // },
         // {
         //     // This is an example of using a contains rule to match files which
         //     // contain the specified string anywhere inside them. It's useful when
         //     // you can only determine which syntax to use by looking at what's
         //     // actually inside the file. In this case, since the file contains a
         //     // handlebar template, we switch its syntax highlighting to Handlebars.
-        //     //
-        //     // NOTE: Make sure to always use a specific match or pair this rule
-        //     // with one for the extension or the file or other characteristics,
-        //     // otherwise you might end up matching the settings file as well
-        //     // (because it contains the string).
-        //     //
-        //     // Also, please note that using "contains" rules may (significantly) slow
-        //     // down the editor, as it is searching throughout the entire file instead
-        //     // of just looking at the file name and/or its first line. That being said,
-        //     // sometimes a full file search is the only way to properly identify the
-        //     // syntax of interest.
+        //     // Because I worry about performance, it is disabled by default.
         //     "syntax": "Handlebars/Handlebars",
         //     "match": "all",
         //     "rules": [
@@ -197,14 +156,6 @@
             ]
         },
         {
-            // This doesn't really need to be here as Sublime Text identifies
-            // Apache files correctly, but I leave it for instructional value
-            "syntax": "Apache/Apache",
-            "rules": [
-                {"file_path": "^.*(\\.htaccess|\\.htgroups|\\.htpasswd|httpd\\.conf)$"}
-            ]
-        },
-        {
             // Sublime recognizes .py files, but not if they don't have an extension,
             // just a shebang
             "syntax": "Python/Python",
@@ -215,9 +166,7 @@
         },
         {
             "syntax": "JavaScript/JSON",
-            "rules": [
-                {"file_path": "^.*(\\.jshintrc|\\.jscsrc|\\.csslintrc)$"}
-            ]
+            "extensions": [".jshintrc", ".jscsrc", ".csslintrc"]
         }
     ]
 }
