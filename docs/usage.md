@@ -111,6 +111,9 @@ For backwards compatibility with older versions of ApplySyntax, the rule name `f
 {"file_path": ".*\\.xml(\\.dist)?$"},
 ```
 
+!!! warning "Deprecation"
+    The previous name for this key was `file_name` and has been deprecated and will be removed in the future.
+
 ### First Line Rule
 A `first_line` rule allows you to check whether the first line of the file's content matches a given regex. As with `file_path` [rules](#file-path-rule), the pattern is always anchored to the beginning of the line.
 
@@ -134,6 +137,9 @@ Can be simplified as:
 ```
 
 For backwards compatibility with older versions of ApplySyntax, the rule name `binary` is also accepted, and functions exactly like `interpreter`.
+
+!!! warning "Deprecation"
+    The previous name for this key was `binary` and has been deprecated and will be removed in the future.
 
 ### Function Rule
 This is an example of using a custom function to decide whether or not to apply a syntax. The source file should be in a plugin folder. `name` is the function name and `source` is the file in which the function is contained; you must include the package it resides in, all sub-folders leading to the file, and the actual file name (extension not needed as it is assumed to be a python file).

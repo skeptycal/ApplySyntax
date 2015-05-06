@@ -277,6 +277,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         self.seen_deprecation_warnings = {
             'binary': False,
             'file_name': False,
+            'name': False
         }
 
         on_touched_callback = self.on_touched
@@ -349,10 +350,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
             if self.syntax_matches(syntax):
                 self.set_syntax(syntax.get("syntax", syntax.get("name")))
                 if "name" in syntax:
-                    log(
-                        "Deprecation Warning - 'name' has been deprecated "
-                        "in favor of 'syntax' and will be removed in the future."
-                    )
+                    self.print_deprecation_warning('name')
                 break
 
     def reset_cache_variables(self, view):
