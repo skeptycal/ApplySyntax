@@ -38,21 +38,18 @@ Notice that each syntax file has a different path since they come from completel
     The previous name for this key was `name` and has been deprecated and will be removed in the future.
 
 ## Extensions
-`extensions` is a convenience option to add a given set of extensions to your language settings file.  By adding the extension to the language settings file, sidebar icons in ST3 will display the proper icon, and files will load with the proper syntax via Sublime's default extension detection method.  Keep in mind though that other rules can override this. `extensions` isn't really a rule, but just a list which ApplySyntax uses to automatically add extension to the language settings file.  A match within this array won't currently stop ApplySyntax from processing rules since it is not evaluated as a rule (this may change in the future).
+`extensions` is an easy way define extensions to apply a syntax to.  'extensions' is an array of strings where each string is an extension.  No `.` is needed when defining extensions, unless it is desired to target a dot file like `.gitignore`, then you would include the `.`.
 
-Apply syntax will create a file `ApplySyntax.ext-list` in your `User` folder and track which extension it added so that if you remove a rule, ApplySyntax will only remove the extensions it added to the language file in question.
+`extensions` is run before all other rules, and it never takes part in "[match all](#match)" rule sets as it is run separate and before normal rule sets; if an extension is matched here, all other rules will be skipped.
 
-If you do not like this functionality, you can simply disable it by setting the following option in your settings file to `false`:
+An added benefit of `extensions` is if you are using ST3 and set [`add_exts_to_lang_settings`](#add-extensions-to-language-settings) to `true`, ApplySyntax will add the extensions to the specified syntax language's settings file in your `User` folder.  By doing this, Sublime Text will be able to show the associated icon for the file type in the sidebar.  Apply syntax will also create a file `ApplySyntax.ext-list` in your `User` folder and track which extension it added so that if you remove a rule, ApplySyntax will only remove the extensions it added to the language file in question. If you do not like this functionality, you can simply disable `add_exts_to_lang_settings` by it to `false`.
 
-```js
-    "add_exts_to_lang_settings": false,
-```
 
 !!! note "Note":
-    `extensions` will not work in a [project specific rule](#project-specific-rules).
+    `add_exts_to_lang_settings` will not be applied to `extensions` found in a [project specific rule](#project-specific-rules), as project specific rules are not global, but the effects of `add_exts_to_lang_settings` are global.
 
 ## Match
-`match` is a setting that you either include or omit.  When included, you set it to `all`.  When set, all rules defined must be met for a match to be considered successful.  `match` ignores the `extensions` key as it is not actually a rule.
+`match` is a setting that you either include or omit.  When included, you set it to `all`.  When set, all rules defined must be met for a match to be considered successful.  `match` ignores the [`extensions`](#extensions) key as `extensions` never take part in 'match all' rule sets.  If you want to include an extension rule in a 'match all' rule set, then a [`file_path`](#file-path-rule) rule should be used.
 
 ```js
     "match": "all"
@@ -74,7 +71,6 @@ In this case, there is no `match` key, so only one rule needs to match:
 ```js
     {
         "syntax": "Ruby/Ruby",
-        "extensions": ["thor", "rake", "simplecov", "jbuilder", "rb", "podspec", "rabl"],
         "rules": [
             {"file_path": ".*(\\\\|/)Gemfile$"},
             {"file_path": ".*(\\\\|/)Capfile$"},
@@ -168,7 +164,7 @@ Sometimes a filename or first line search is just not enough and maybe a functio
 ## Project Specific Rules
 To define project specific syntaxes, just add `project_syntaxes` to your project file.  `project_syntaxes` is an array; just add your syntax rules to `project_syntaxes` just like you would add them to `syntaxes` in your user settings file, and ApplySyntax will prepend the rules to the beginning of your defined rules.  The order of rules is as follows: project --> user --> default.
 
-There is one difference between project specific rules and global rules.  In project rules, the `extensions` key will be ignored, as the extension feature adds extensions globally, and project specific rules are meant to be confined to the project scope.
+There is one difference between project specific rules and global rules.  In project rules, the [`extensions`](#extensions) key will not be applied to the associated syntax language settings file as project specific rules are not global, but language settings files are global.
 
 ```js
     "project_syntaxes": [
@@ -183,7 +179,7 @@ There is one difference between project specific rules and global rules.  In pro
 ```
 
 ## Settings Options
-There are a couple of general settings found in `ApplySyntax.sublime-settings.
+There are a couple of general settings found in `ApplySyntax.sublime-settings`.
 
 ### Re-Raise Exceptions
 If an exception occurs when processing a function, this will re-raised the captured exception in Sublime's console so the user get feedback. This is really only useful to those writing functions. The average user shouldn't need this.  By default, the setting will be set to `false`.
@@ -204,4 +200,11 @@ To enable adding defined extensions to language settings, just set `add_exts_to_
 
 ```js
     "add_exts_to_lang_settings": true,
+```
+
+### Troubleshooting and Debugging
+By default, the `debug` setting is turned on so that users have some form of visual feedback in the console that ApplySyntax is working.  This can be turned off by setting `debug` to `false`.  If developing, you can set `debug` to `verbose` to get even more info in the console.
+
+```js
+    "debug": true,
 ```
