@@ -20,7 +20,7 @@ For syntax files you must specify the path to the syntax file. The plugin is cap
 "syntax": "Rails/Language/Ruby Haml"
 ```
 
-Notice that the paths are relative to the `Packages` folder.  Also, notice that we don't specify the extension.  Sublime Text in build 3084 added a new language syntax with the extension `sublime-syntax`.  In Sublime builds >= 3084, ApplySyntax will first default to `sublime-syntax` and fall back to `tmLanguage` if it cannot find the the other format.  If you want to force the syntax, just specify the extension; the extension must be either `sublime-syntax` or `tmlanguage`.
+Notice that the paths are relative to the `Packages` folder.  Also, notice that we don't specify the extension.  Sublime Text in build 3084 added a new language syntax with the extension `sublime-syntax`.  In Sublime builds >= 3084, ApplySyntax will first default to `sublime-syntax` and fall back to `tmLanguage` if it cannot find the the other format.  If you want to force the syntax, just specify the extension; the extension must be either `sublime-syntax` or `tmLanguage`.
 
 ```js
 "syntax": "Rails/Language/Ruby Haml.tmLanguage"
