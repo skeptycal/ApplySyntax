@@ -411,12 +411,6 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                     debug('Syntax already set to ' + new_syntax)
                     break
 
-    def strip_extensions(self, syntaxes):
-        for syntax in syntaxes:
-            if 'extensions' in syntax:
-                del syntax['extensions']
-        return syntaxes
-
     def create_extension_rule(self, syntaxes):
         for syntax in syntaxes:
             if 'extensions' in syntax:
@@ -436,7 +430,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
             self.get_setting("syntaxes", [])
         )
         # load any project-defined syntaxes
-        project_syntaxes = self.strip_extensions(
+        project_syntaxes = self.create_extension_rule(
             self.get_setting("project_syntaxes", [])
         )
 
