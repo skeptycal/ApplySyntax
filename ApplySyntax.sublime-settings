@@ -24,10 +24,10 @@
             "syntax": "XML/XML",
             "extensions": ["xml.dist"],
             "rules": [
-                {"file_name": ".*\\.xml(\\.dist)?$"},
+                {"file_path": ".*\\.xml(\\.dist)?$"},
                 {"first_line": "^<\\?xml"}
                 // See "add_exts_to_lang_settings" setting above for more info
-                // if using extensions, you don't need to set "file_name".
+                // if using extensions, you don't need to set "file_path".
                 // Rule could be simplified to this:
                 //
                 // "syntax": "XML/XML",
@@ -43,7 +43,7 @@
             // in .rb and will be identified as Rails or Ruby otherwise.
             "syntax": "Cucumber/Cucumber Steps",
             "rules": [
-                {"file_name": ".*steps\\.rb$"}
+                {"file_path": ".*steps\\.rb$"}
             ]
         },
         {
@@ -55,16 +55,16 @@
                 "Better RSpec/Better RSpec"
             ],
             "rules": [
-                {"file_name": ".*spec\\.rb$"},
-                {"file_name": ".*/spec/.*\\.rb$"},
-                {"file_name": ".*\\\\spec\\\\.*\\.rb$"}
+                {"file_path": ".*spec\\.rb$"},
+                {"file_path": ".*/spec/.*\\.rb$"},
+                {"file_path": ".*\\\\spec\\\\.*\\.rb$"}
             ]
         },
         {
             // Seems must other will make .html.erb as HTML files
             "syntax": "Rails/HTML (Rails)",
             "rules": [
-                {"file_name": ".*\\.html\\.erb$"}
+                {"file_path": ".*\\.html\\.erb$"}
             ]
         },
         {
@@ -73,7 +73,7 @@
             "syntax": "Rails/Ruby Haml",
             "extensions": ["haml"],
             "rules": [
-                {"file_name": ".*\\.haml$"}
+                {"file_path": ".*\\.haml$"}
             ]
         },
         {
@@ -90,24 +90,24 @@
             "syntax": "Ruby/Ruby",
             "extensions": ["thor", "rake", "simplecov", "jbuilder", "rb", "podspec", "rabl"],
             "rules": [
-                {"file_name": ".*(\\\\|/)Gemfile$"},
-                {"file_name": ".*(\\\\|/)Capfile$"},
-                {"file_name": ".*(\\\\|/)Guardfile$"},
-                {"file_name": ".*(\\\\|/)[Rr]akefile$"},
-                {"file_name": ".*(\\\\|/)Berksfile$"},
-                {"file_name": ".*(\\\\|/)[Cc]heffile$"},
-                {"file_name": ".*(\\\\|/)Thorfile$"},
-                {"file_name": ".*(\\\\|/)Podfile$"},
-                {"file_name": ".*(\\\\|/)config.ru$"},
-                {"file_name": ".*\\\\Vagrantfile(\\\\..*)?$"},
-                {"file_name": ".*/Vagrantfile(/..*)?$"},
-                {"file_name": ".*\\.thor$"},
-                {"file_name": ".*\\.rake$"},
-                {"file_name": ".*\\.simplecov$"},
-                {"file_name": ".*\\.jbuilder$"},
-                {"file_name": ".*\\.rb$"},
-                {"file_name": ".*\\.podspec$"},
-                {"file_name": ".*\\.rabl$"},
+                {"file_path": ".*(\\\\|/)Gemfile$"},
+                {"file_path": ".*(\\\\|/)Capfile$"},
+                {"file_path": ".*(\\\\|/)Guardfile$"},
+                {"file_path": ".*(\\\\|/)[Rr]akefile$"},
+                {"file_path": ".*(\\\\|/)Berksfile$"},
+                {"file_path": ".*(\\\\|/)[Cc]heffile$"},
+                {"file_path": ".*(\\\\|/)Thorfile$"},
+                {"file_path": ".*(\\\\|/)Podfile$"},
+                {"file_path": ".*(\\\\|/)config.ru$"},
+                {"file_path": ".*\\\\Vagrantfile(\\\\..*)?$"},
+                {"file_path": ".*/Vagrantfile(/..*)?$"},
+                {"file_path": ".*\\.thor$"},
+                {"file_path": ".*\\.rake$"},
+                {"file_path": ".*\\.simplecov$"},
+                {"file_path": ".*\\.jbuilder$"},
+                {"file_path": ".*\\.rb$"},
+                {"file_path": ".*\\.podspec$"},
+                {"file_path": ".*\\.rabl$"},
                 // A binary rule does the same thing as a "first_line" rule that uses
                 // a regexp to match a shebang, the difference being ApplySyntax
                 // will construct the regexp and the user doesn't have to. So
@@ -131,7 +131,7 @@
         //     "match": "all",
         //     "rules": [
         //         {"binary": "ruby"},
-        //         {"file_name": ".*\\.ruby$"}
+        //         {"file_path": ".*\\.ruby$"}
         //     ]
         // },
         // {
@@ -154,7 +154,7 @@
         //     "syntax": "Handlebars/Handlebars",
         //     "match": "all",
         //     "rules": [
-        //         {"file_name": ".*\\.html$"},
+        //         {"file_path": ".*\\.html$"},
         //         {"contains": "<script [^>]*type=\"text\\/x-handlebars\"[^>]*>"}
         //     ]
         // },
@@ -163,21 +163,21 @@
             "syntax": "Ruby Slim/Syntaxes/Ruby Slim",
             "extensions": ["emblem"],
             "rules": [
-                {"file_name": ".*\\.emblem$"}
+                {"file_path": ".*\\.emblem$"}
             ]
         },
         {
             "syntax": "Blade/Blade",
             "extensions": ["blade.php"],
             "rules": [
-                {"file_name": ".*\\.blade.php$"}
+                {"file_path": ".*\\.blade.php$"}
             ]
         },
         {
             "syntax": "PHP/PHP",
             "extensions": ["php3", "php4", "php5", "inc", "phtml"],
             "rules": [
-                {"file_name": ".*\\.(php(3|4|5)?|inc|phtml)$"},
+                {"file_path": ".*\\.(php(3|4|5)?|inc|phtml)$"},
                 {"first_line": "^<\\?php"}
             ]
         },
@@ -185,15 +185,15 @@
             "syntax": "PHP/Smarty",
             "extensions": ["tpl"],
             "rules": [
-                {"file_name": ".*\\.tpl$"}
+                {"file_path": ".*\\.tpl$"}
             ]
         },
         {
             "syntax": "YAML/YAML",
             "extensions": [".gemrc", "yml", "yml.dist"],
             "rules": [
-                {"file_name": ".*\\.gemrc$"},
-                {"file_name": ".*\\.yml(\\.dist)?$"}
+                {"file_path": ".*\\.gemrc$"},
+                {"file_path": ".*\\.yml(\\.dist)?$"}
             ]
         },
         {
@@ -202,21 +202,21 @@
             "syntax": "INI/INI",
             "extensions": [".gitattributes", ".gitconfig", ".gitignore", "ini.dist", ".npmrc"],
             "rules": [
-                {"file_name": ".*/git/(attributes|config|ignore)$"},
-                {"file_name": ".*\\\\git\\\\(attributes|config|ignore)$"},
-                {"file_name": ".*\\.(gitattributes|gitconfig|gitignore)$"},
-                {"file_name": ".*\\.ini(\\.dist)?$"},
-                {"file_name": ".*\\.npmrc$"}
+                {"file_path": ".*/git/(attributes|config|ignore)$"},
+                {"file_path": ".*\\\\git\\\\(attributes|config|ignore)$"},
+                {"file_path": ".*\\.(gitattributes|gitconfig|gitignore)$"},
+                {"file_path": ".*\\.ini(\\.dist)?$"},
+                {"file_path": ".*\\.npmrc$"}
             ]
         },
         {
             "syntax": "ShellScript/Shell-Unix-Generic",
             "extensions": ["bash", "sh", "zsh"],
             "rules": [
-                {"file_name": "profile"},
-                {"file_name": ".*\\.bash.*$"},
-                {"file_name": ".*\\.z(shrc|shenv|profile|login|logout).*$"},
-                {"file_name": ".*\\.(bash|sh|zsh)$"},
+                {"file_path": "profile"},
+                {"file_path": ".*\\.bash.*$"},
+                {"file_path": ".*\\.z(shrc|shenv|profile|login|logout).*$"},
+                {"file_path": ".*\\.(bash|sh|zsh)$"},
                 {"binary": "bash"},
                 {"binary": "zsh"}
             ]
@@ -226,7 +226,7 @@
             // Apache files correctly, but I leave it for instructional value
             "syntax": "Apache/Apache",
             "rules": [
-                {"file_name": "^.*(\\.htaccess|\\.htgroups|\\.htpasswd|httpd\\.conf)$"}
+                {"file_path": "^.*(\\.htaccess|\\.htgroups|\\.htpasswd|httpd\\.conf)$"}
             ]
         },
         {
@@ -235,14 +235,14 @@
             "syntax": "Python/Python",
             "extensions": ["py3", "pyw"],
             "rules": [
-                {"file_name": ".*\\.(py|pyw|py3)"},
+                {"file_path": ".*\\.(py|pyw|py3)"},
                 {"binary": "python"}
             ]
         },
         {
             "syntax": "JavaScript/JSON",
             "rules": [
-                {"file_name": "^.*(\\.jshintrc|\\.jscsrc|\\.csslintrc)$"}
+                {"file_path": "^.*(\\.jshintrc|\\.jscsrc|\\.csslintrc)$"}
             ]
         }
     ]

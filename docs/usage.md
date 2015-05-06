@@ -64,7 +64,7 @@ So in this case, all the rules must match for the syntax to be applied:
      "syntax": "Handlebars/Handlebars",
      "match": "all",
      "rules": [
-         {"file_name": ".*\\.html$"},
+         {"file_path": ".*\\.html$"},
          {"contains": "<script [^>]*type=\"text\\/x-handlebars\"[^>]*>"}
      ]
 ```
@@ -76,25 +76,25 @@ In this case, there is no `match` key, so only one rule needs to match:
         "syntax": "Ruby/Ruby",
         "extensions": ["thor", "rake", "simplecov", "jbuilder", "rb", "podspec", "rabl"],
         "rules": [
-            {"file_name": ".*(\\\\|/)Gemfile$"},
-            {"file_name": ".*(\\\\|/)Capfile$"},
-            {"file_name": ".*(\\\\|/)Guardfile$"},
-            {"file_name": ".*(\\\\|/)[Rr]akefile$"},
-            {"file_name": ".*(\\\\|/)Berksfile$"},
-            {"file_name": ".*(\\\\|/)[Cc]heffile$"},
-            {"file_name": ".*(\\\\|/)Thorfile$"},
-            {"file_name": ".*(\\\\|/)Podfile$"},
-            {"file_name": ".*(\\\\|/)config.ru$"},
-            {"file_name": ".*\\\\Vagrantfile(\\\\..*)?$"},
-            {"file_name": ".*/Vagrantfile(/..*)?$"},
-            {"file_name": ".*\\.thor$"},
-            {"file_name": ".*\\.rake$"},
-            {"file_name": ".*\\.simplecov$"},
-            {"file_name": ".*\\.jbuilder$"},
-            {"file_name": ".*\\.rb$"},
-            {"file_name": ".*\\.podspec$"},
-            {"file_name": ".*\\.rabl$"},
-            {"binary": "ruby"}
+            {"file_path": ".*(\\\\|/)Gemfile$"},
+            {"file_path": ".*(\\\\|/)Capfile$"},
+            {"file_path": ".*(\\\\|/)Guardfile$"},
+            {"file_path": ".*(\\\\|/)[Rr]akefile$"},
+            {"file_path": ".*(\\\\|/)Berksfile$"},
+            {"file_path": ".*(\\\\|/)[Cc]heffile$"},
+            {"file_path": ".*(\\\\|/)Thorfile$"},
+            {"file_path": ".*(\\\\|/)Podfile$"},
+            {"file_path": ".*(\\\\|/)config.ru$"},
+            {"file_path": ".*\\\\Vagrantfile(\\\\..*)?$"},
+            {"file_path": ".*/Vagrantfile(/..*)?$"},
+            {"file_path": ".*\\.thor$"},
+            {"file_path": ".*\\.rake$"},
+            {"file_path": ".*\\.simplecov$"},
+            {"file_path": ".*\\.jbuilder$"},
+            {"file_path": ".*\\.rb$"},
+            {"file_path": ".*\\.podspec$"},
+            {"file_path": ".*\\.rabl$"},
+            {"interpreter": "ruby"}
         ]
     },
 ```
@@ -102,22 +102,24 @@ In this case, there is no `match` key, so only one rule needs to match:
 ## Rules
 `rules` is an array of rules that can be used to target specific files with your defined syntax file.  The rules are processed until the first rule matches, so order your rules in a way that makes sense to you.
 
-### File Name Rule
-A `file_name` rule defines a regex to match against the complete file path. The pattern is always anchored to the beginning of the path, as if there were an implicit `^` — so the pattern `/a/b/c` will match the file `/a/b/c/foo.py`, but not the file `/x/y/z/a/b/c/foo.py`. (You may include an explicit `^` at the beginning of the pattern, as some of the default rules do — but the result is the same either way.)
+### File Path Rule
+A `file_path` rule defines a regex to match against the complete file path. The pattern is always anchored to the beginning of the path, as if there were an implicit `^` — so the pattern `/a/b/c` will match the file `/a/b/c/foo.py`, but not the file `/x/y/z/a/b/c/foo.py`. (You may include an explicit `^` at the beginning of the pattern, as some of the default rules do — but the result is the same either way.)
+
+For backwards compatibility with older versions of ApplySyntax, the rule name `file_name` is also accepted, and functions exactly like `file_path`.
 
 ```js
-{"file_name": ".*\\.xml(\\.dist)?$"},
+{"file_path": ".*\\.xml(\\.dist)?$"},
 ```
 
 ### First Line Rule
-A `first_line` rule allows you to check whether the first line of the file's content matches a given regex. As with `file_name` [rules](#file-name-rule), the pattern is always anchored to the beginning of the line.
+A `first_line` rule allows you to check whether the first line of the file's content matches a given regex. As with `file_path` [rules](#file-path-rule), the pattern is always anchored to the beginning of the line.
 
 ```js
 {"first_line": "^<\\?xml"},
 ```
 
-### Binary (Shebang)
-A `binary` rule does the same thing as a `first_line` rule that uses a regex to match a shebang.  The difference being that ApplySyntax will construct the regex for you.
+### Interpreter (Shebang)
+An `interpreter` rule does the same thing as a `first_line` rule that uses a regex to match an interpreter directive (shebang).  The difference being that ApplySyntax will construct the regex for you.
 
 So a `first_line` rule:
 
@@ -128,8 +130,10 @@ So a `first_line` rule:
 Can be simplified as:
 
 ```js
-{"binary": "ruby"}
+{"interpreter": "ruby"}
 ```
+
+For backwards compatibility with older versions of ApplySyntax, the rule name `binary` is also accepted, and functions exactly like `interpreter`.
 
 ### Function Rule
 This is an example of using a custom function to decide whether or not to apply a syntax. The source file should be in a plugin folder. `name` is the function name and `source` is the file in which the function is contained; you must include the package it resides in, all sub-folders leading to the file, and the actual file name (extension not needed as it is assumed to be a python file).
@@ -165,7 +169,7 @@ There is one difference between project specific rules and global rules.  In pro
         {
             "syntax": "XML/XML",
             "rules": [
-                {"file_name": ".*\\.xml(\\.dist)?$"},
+                {"file_path": ".*\\.xml(\\.dist)?$"},
                 {"first_line": "^<\\?xml"}
             ]
         }

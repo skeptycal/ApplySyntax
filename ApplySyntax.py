@@ -274,7 +274,22 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         self.view = None
         self.syntaxes = []
         self.reraise_exceptions = False
+        self.seen_deprecation_warnings = {
+            'binary': False,
+            'file_name': False,
+        }
+
         on_touched_callback = self.on_touched
+
+    def print_deprecation_warning(self, keyword):
+        if self.seen_deprecation_warnings[keyword]:
+            return
+
+        self.seen_deprecation_warnings[keyword] = True
+        log(
+            "Warning: '%s' keyword is deprecated and may be removed in the future."
+            % keyword
+        )
 
     def touch(self, view):
         view.settings().set("apply_syntax_touched", True)
@@ -490,12 +505,24 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                 self.fetch_first_line()
             subject = self.first_line
             regexp = rule.get("first_line")
+        elif "interpreter" in rule:
+            if self.first_line is None:
+                self.fetch_first_line()
+            subject = self.first_line
+            regexp = '^#\\!(?:.+)' + rule.get("interpreter")
         elif "binary" in rule:
+            # Deprecated in favour of `interpreter`
+            self.print_deprecation_warning('binary')
             if self.first_line is None:
                 self.fetch_first_line()
             subject = self.first_line
             regexp = '^#\\!(?:.+)' + rule.get("binary")
+        elif "file_path" in rule:
+            subject = self.file_name
+            regexp = rule.get("file_path")
         elif "file_name" in rule:
+            # Deprecated in favour of `file_path`
+            self.print_deprecation_warning('file_name')
             subject = self.file_name
             regexp = rule.get("file_name")
         elif "contains" in rule:
