@@ -100,15 +100,15 @@ In this case, there is no `match` key, so only one rule needs to match:
 ## Rules
 `rules` is an array of rules that can be used to target specific files with your defined syntax file.  The rules are processed until the first rule matches, so order your rules in a way that makes sense to you.
 
-### Filename Rule
-Filename rule defines a filename with regex.  This uses the full file path.
+### File Name Rule
+A `file_name` rule defines a regex to match against the complete file path. The pattern is always anchored to the beginning of the path, as if there were an implicit `^` — so the pattern `/a/b/c` will match the file `/a/b/c/foo.py`, but not the file `/x/y/z/a/b/c/foo.py`. (You may include an explicit `^` at the beginning of the pattern, as some of the default rules do — but the result is the same either way.)
 
 ```js
 {"file_name": ".*\\.xml(\\.dist)?$"},
 ```
 
 ### First Line Rule
-First line rule allows you to check if the first line of the files content matches a given regex.
+A `first_line` rule allows you to check whether the first line of the file's content matches a given regex. As with `file_name` rules (see above), the pattern is always anchored to the beginning of the line.
 
 ```js
 {"first_line": "^<\\?xml"},
