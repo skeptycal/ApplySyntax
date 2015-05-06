@@ -6,7 +6,7 @@ Configuring and using ApplySyntax.
 # Overview
 ApplySyntax is based on the idea of creating rules for applying certain syntaxes to specific files. You define the rules, the plugin checks them. The first one to pass wins.
 
-ApplySyntax allows you to create your own custom rules. The easiest way to get started is to create a settings file called `ApplySyntax.sublime-settings` in your `Packages/User` folder.  You can override the default settings in `Packages/ApplySyntax/ApplySyntax.sublime-settings` by setting them in your `Packages/User/ApplySyntax.sublime-settings` file. You can override any setting to meet your needs.  To append rules to the default rule set, you can create a key called `syntaxes` (modifying `default_syntaxes` will wipe out all the default rules and is not recommended as you won't get the latest updates).
+ApplySyntax allows you to create your own custom rules. The easiest way to get started is to create a settings file called `ApplySyntax.sublime-settings` in your `Packages/User` folder.  You can override the default settings in `Packages/ApplySyntax/ApplySyntax.sublime-settings` by setting them in your `Packages/User/ApplySyntax.sublime-settings` file. You can override any setting to meet your needs.  To prepend rules to the default rule set, you can create a key called `syntaxes` (modifying `default_syntaxes` will wipe out all the default rules and is not recommended as you won't get the latest updates).
 
 # Creating Rules
 Each rule is a dictionary within the syntax array.  Let's take a look at the top level parameters.
@@ -166,7 +166,7 @@ Sometimes a filename or first line search is just not enough and maybe a functio
     Also, try to use very specific regex to ensure you don't get false positives.
 
 ## Project Specific Rules
-To define project specific syntaxes, just add `project_syntaxes` to your project file.  `project_syntaxes` is an array; just add your syntax rules to `project_syntaxes` just like you would add them to `syntaxes` in your user settings file, and ApplySyntax will append the rules to the end of your globally defined rules.
+To define project specific syntaxes, just add `project_syntaxes` to your project file.  `project_syntaxes` is an array; just add your syntax rules to `project_syntaxes` just like you would add them to `syntaxes` in your user settings file, and ApplySyntax will prepend the rules to the beginning of your defined rules.  The order of rules is as follows: project --> user --> default.
 
 There is one difference between project specific rules and global rules.  In project rules, the `extensions` key will be ignored, as the extension feature adds extensions globally, and project specific rules are meant to be confined to the project scope.
 
