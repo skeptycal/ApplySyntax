@@ -411,14 +411,34 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                     debug('Syntax already set to ' + new_syntax)
                     break
 
+    def strip_extensions(self, syntaxes):
+        for syntax in syntaxes:
+            if 'extensions' in syntax:
+                del syntax['extensions']
+        return syntaxes
+
+    def create_extension_rule(self, syntaxes):
+        for syntax in syntaxes:
+            if 'extensions' in syntax:
+                if 'rules' not in syntax:
+                    syntax['rules'] = []
+                syntax['rules'].insert(0, {'extensions': syntax['extensions']})
+        return syntaxes
+
     def load_syntaxes(self):
         self.reraise_exceptions = SETTINGS.get("reraise_exceptions")
         # load the default syntaxes
-        default_syntaxes = self.get_setting("default_syntaxes", [])
+        default_syntaxes = self.create_extension_rule(
+            self.get_setting("default_syntaxes", [])
+        )
         # load any user-defined syntaxes
-        user_syntaxes = self.get_setting("syntaxes", [])
+        user_syntaxes = self.create_extension_rule(
+            self.get_setting("syntaxes", [])
+        )
         # load any project-defined syntaxes
-        project_syntaxes = self.get_setting("project_syntaxes", [])
+        project_syntaxes = self.strip_extensions(
+            self.get_setting("project_syntaxes", [])
+        )
 
         self.syntaxes = project_syntaxes + user_syntaxes + default_syntaxes
 
@@ -429,7 +449,11 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         for rule in rules:
             if 'extensions' in rule:
                 # Do not let 'extensions' contribute to 'match_all'
-                continue
+                result = self.extension_matches(rule)
+                if result:
+                    return True
+                else:
+                    continue
 
             if 'function' in rule:
                 result = self.function_matches(rule)
@@ -470,6 +494,17 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                 function = None
 
         return function
+
+    def extension_matches(self, rule):
+        match = False
+        extensions = rule.get('extensions', [])
+        file_name = os.path.basename(self.file_name).lower()
+        for extension in extensions:
+            dot_file_match = extension.startswith('.') and extension == file_name
+            if dot_file_match or file_name.endswith('.' + extension):
+                match = True
+                break
+        return match
 
     def function_matches(self, rule):
         function = rule.get("function")

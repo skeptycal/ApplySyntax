@@ -24,7 +24,6 @@
             "syntax": "XML/XML",
             "extensions": ["xml.dist"],
             "rules": [
-                {"file_path": ".*\\.xml(\\.dist)?$"},
                 {"first_line": "^<\\?xml"}
                 // See "add_exts_to_lang_settings" setting above for more info
                 // if using extensions, you don't need to set "file_path".
@@ -71,10 +70,7 @@
             // This rule could be incorporated into the next one, but I prefer to be
             // more explicit rather than less
             "syntax": "Rails/Ruby Haml",
-            "extensions": ["haml"],
-            "rules": [
-                {"file_path": ".*\\.haml$"}
-            ]
+            "extensions": ["haml"]
         },
         {
             // This is an example of using a custom function to decide whether or
@@ -101,24 +97,17 @@
                 {"file_path": ".*(\\\\|/)config.ru$"},
                 {"file_path": ".*\\\\Vagrantfile(\\\\..*)?$"},
                 {"file_path": ".*/Vagrantfile(/..*)?$"},
-                {"file_path": ".*\\.thor$"},
-                {"file_path": ".*\\.rake$"},
-                {"file_path": ".*\\.simplecov$"},
-                {"file_path": ".*\\.jbuilder$"},
-                {"file_path": ".*\\.rb$"},
-                {"file_path": ".*\\.podspec$"},
-                {"file_path": ".*\\.rabl$"},
-                // A binary rule does the same thing as a "first_line" rule that uses
+                // A interpreter rule does the same thing as a "first_line" rule that uses
                 // a regexp to match a shebang, the difference being ApplySyntax
                 // will construct the regexp and the user doesn't have to. So
                 //
-                //      {"binary": "ruby"}
+                //      {"interpreter": "ruby"}
                 //
                 // is functionally equivalent to
                 //
                 //      {"first_line": "^#\\!(?:.+)ruby"}
                 //
-                {"binary": "ruby"}
+                {"interpreter": "ruby"}
             ]
         },
         // {
@@ -130,7 +119,7 @@
         //     "syntax": "Ruby/Ruby",
         //     "match": "all",
         //     "rules": [
-        //         {"binary": "ruby"},
+        //         {"interpreter": "ruby"},
         //         {"file_path": ".*\\.ruby$"}
         //     ]
         // },
@@ -161,40 +150,26 @@
         {
             // Emblem syntax matches Ruby Slim
             "syntax": "Ruby Slim/Syntaxes/Ruby Slim",
-            "extensions": ["emblem"],
-            "rules": [
-                {"file_path": ".*\\.emblem$"}
-            ]
+            "extensions": ["emblem"]
         },
         {
             "syntax": "Blade/Blade",
-            "extensions": ["blade.php"],
-            "rules": [
-                {"file_path": ".*\\.blade.php$"}
-            ]
+            "extensions": ["blade.php"]
         },
         {
             "syntax": "PHP/PHP",
             "extensions": ["php3", "php4", "php5", "inc", "phtml"],
             "rules": [
-                {"file_path": ".*\\.(php(3|4|5)?|inc|phtml)$"},
                 {"first_line": "^<\\?php"}
             ]
         },
         {
             "syntax": "PHP/Smarty",
-            "extensions": ["tpl"],
-            "rules": [
-                {"file_path": ".*\\.tpl$"}
-            ]
+            "extensions": ["tpl"]
         },
         {
             "syntax": "YAML/YAML",
-            "extensions": [".gemrc", "yml", "yml.dist"],
-            "rules": [
-                {"file_path": ".*\\.gemrc$"},
-                {"file_path": ".*\\.yml(\\.dist)?$"}
-            ]
+            "extensions": [".gemrc", "yml", "yml.dist"]
         },
         {
             // This rule requires the INI plugin to be installed (via Package Control
@@ -203,10 +178,7 @@
             "extensions": [".gitattributes", ".gitconfig", ".gitignore", "ini.dist", ".npmrc"],
             "rules": [
                 {"file_path": ".*/git/(attributes|config|ignore)$"},
-                {"file_path": ".*\\\\git\\\\(attributes|config|ignore)$"},
-                {"file_path": ".*\\.(gitattributes|gitconfig|gitignore)$"},
-                {"file_path": ".*\\.ini(\\.dist)?$"},
-                {"file_path": ".*\\.npmrc$"}
+                {"file_path": ".*\\\\git\\\\(attributes|config|ignore)$"}
             ]
         },
         {
@@ -216,9 +188,8 @@
                 {"file_path": "profile"},
                 {"file_path": ".*\\.bash.*$"},
                 {"file_path": ".*\\.z(shrc|shenv|profile|login|logout).*$"},
-                {"file_path": ".*\\.(bash|sh|zsh)$"},
-                {"binary": "bash"},
-                {"binary": "zsh"}
+                {"interpreter": "bash"},
+                {"interpreter": "zsh"}
             ]
         },
         {
@@ -235,8 +206,7 @@
             "syntax": "Python/Python",
             "extensions": ["py3", "pyw"],
             "rules": [
-                {"file_path": ".*\\.(py|pyw|py3)"},
-                {"binary": "python"}
+                {"interpreter": "python"}
             ]
         },
         {
