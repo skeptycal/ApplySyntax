@@ -275,6 +275,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         self.syntaxes = []
         self.reraise_exceptions = False
         self.seen_deprecation_warnings = {
+            'binary': False,
             'file_name': False,
         }
 
@@ -504,7 +505,14 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                 self.fetch_first_line()
             subject = self.first_line
             regexp = rule.get("first_line")
+        elif "interpreter" in rule:
+            if self.first_line is None:
+                self.fetch_first_line()
+            subject = self.first_line
+            regexp = '^#\\!(?:.+)' + rule.get("interpreter")
         elif "binary" in rule:
+            # Deprecated in favour of `interpreter`
+            self.print_deprecation_warning('binary')
             if self.first_line is None:
                 self.fetch_first_line()
             subject = self.first_line
@@ -513,6 +521,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
             subject = self.file_name
             regexp = rule.get("file_path")
         elif "file_name" in rule:
+            # Deprecated in favour of `file_path`
             self.print_deprecation_warning('file_name')
             subject = self.file_name
             regexp = rule.get("file_name")
