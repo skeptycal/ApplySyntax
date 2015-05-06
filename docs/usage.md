@@ -206,5 +206,7 @@ To enable adding defined extensions to language settings, just set `add_exts_to_
 By default, the `debug` setting is turned on so that users have some form of visual feedback in the console that ApplySyntax is working.  This can be turned off by setting `debug` to `false`.  If developing, you can set `debug` to `verbose` to get even more info in the console.
 
 ```js
+    // Control level of logging in the console.
+    // (true|false|"verbose")
     "debug": true,
 ```
