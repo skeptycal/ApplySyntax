@@ -11,28 +11,31 @@ ApplySyntax allows you to create your own custom rules. The easiest way to get s
 # Creating Rules
 Each rule is a dictionary within the syntax array.  Let's take a look at the top level parameters.
 
-## Name
-`name` is the syntax file that will be applied to a view which meets the criteria defined in the rule.
+## Syntax
+`syntax` is the syntax file that will be applied to a view which meets the criteria defined in the rule.
 
 For syntax files you must specify the path to the syntax file. The plugin is capable of supporting multiple levels of folder nesting if you need it to. For example, if you had all of your tmLanguage files for Rails organized in a folder like this: `Packages/Rails/Language/*.tmLanguage`, and you were looking to use the `Ruby Haml.tmLanguage` file, the path to name translation would simply be: `Packages/Rails/Language/Ruby Haml.tmLanguage` -> `Rails/Language/Ruby Haml`.
 
 ```js
-"name": "Rails/Language/Ruby Haml"
+"syntax": "Rails/Language/Ruby Haml"
 ```
 
 Notice that the paths are relative to the `Packages` folder.  Also, notice that we don't specify the extension.  Sublime Text in build 3084 added a new language syntax with the extension `sublime-syntax`.  In Sublime builds >= 3084, ApplySyntax will first default to `sublime-syntax` and fall back to `tmLanguage` if it cannot find the the other format.  If you want to force the syntax, just specify the extension; the extension must be either `sublime-syntax` or `tmlanguage`.
 
 ```js
-"name": "Rails/Language/Ruby Haml.tmLanguage"
+"syntax": "Rails/Language/Ruby Haml.tmLanguage"
 ```
 
-If it is desirable for the syntax rule to reference multiple tmLanguage files because it is not known which package will be on a machine, you can set the syntax as an array of names as shown in the following example.  The first one found will be used.
+If it is desirable for the syntax rule to reference multiple tmLanguage files because it is not known which package will be on a machine, you can set the syntax as an array of syntaxes as shown in the following example.  The first one found will be used.
 
 ```js
-"name": ["RSpec/RSpec", "RSpec (snippets and syntax)/Syntaxes/RSpec"]
+"syntax": ["RSpec/RSpec", "RSpec (snippets and syntax)/Syntaxes/RSpec"]
 ```
 
 Notice that each syntax file has a different path since they come from completely different plugins.
+
+!!! warning "Deprecation"
+    The previous name for this key was `name` and has been deprecated and will be removed in the future.
 
 ## Extensions
 `extensions` is a convenience option to add a given set of extensions to your language settings file.  By adding the extension to the language settings file, sidebar icons in ST3 will display the proper icon, and files will load with the proper syntax via Sublime's default extension detection method.  Keep in mind though that other rules can override this. `extensions` isn't really a rule, but just a list which ApplySyntax uses to automatically add extension to the language settings file.  A match within this array won't currently stop ApplySyntax from processing rules since it is not evaluated as a rule (this may change in the future).
@@ -58,7 +61,7 @@ If you do not like this functionality, you can simply disable it by setting the 
 So in this case, all the rules must match for the syntax to be applied:
 
 ```js
-     "name": "Handlebars/Handlebars",
+     "syntax": "Handlebars/Handlebars",
      "match": "all",
      "rules": [
          {"file_name": ".*\\.html$"},
@@ -70,7 +73,7 @@ In this case, there is no `match` key, so only one rule needs to match:
 
 ```js
     {
-        "name": "Ruby/Ruby",
+        "syntax": "Ruby/Ruby",
         "extensions": ["thor", "rake", "simplecov", "jbuilder", "rb", "podspec", "rabl"],
         "rules": [
             {"file_name": ".*(\\\\|/)Gemfile$"},
@@ -160,7 +163,7 @@ There is one difference between project specific rules and global rules.  In pro
 ```js
     "project_syntaxes": [
         {
-            "name": "XML/XML",
+            "syntax": "XML/XML",
             "rules": [
                 {"file_name": ".*\\.xml(\\.dist)?$"},
                 {"first_line": "^<\\?xml"}
@@ -180,7 +183,7 @@ If an exception occurs when processing a function, this will re-raised the captu
 ```
 
 ### New File Syntax
-If you want to have a syntax applied when new files are created, set `new_file_syntax` to the name of the syntax to use. The format is exactly the same as the [`name`](#name) parameter in the syntax rules mentioned earlier. For example, if you want to have a new file use JavaScript syntax, set `new_file_syntax` to `JavaScript/JavaScript`.  The default is `false`.
+If you want to have a syntax applied when new files are created, set `new_file_syntax` to the name of the syntax to use. The format is exactly the same as the [`syntax`](#syntax) parameter in the syntax rules mentioned earlier. For example, if you want to have a new file use JavaScript syntax, set `new_file_syntax` to `JavaScript/JavaScript`.  The default is `false`.
 
 ```js
     "new_file_syntax": "JavaScript/JavaScript",

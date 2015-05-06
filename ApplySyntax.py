@@ -11,7 +11,7 @@ DEFAULT_SETTINGS = '''
     "reraise_exceptions": false,
 
     // If you want to have a syntax applied when new files are created, set new_file_syntax to the name of the syntax to use.
-    // The format is exactly the same as "name" in the rules below. For example, if you want to have a new file use
+    // The format is exactly the same as "syntax" in the rules below. For example, if you want to have a new file use
     // JavaScript syntax, set new_file_syntax to 'JavaScript'.
     "new_file_syntax": false,
 
@@ -230,7 +230,7 @@ def update_extenstions(lst):
 
         # Add the extensions to the relevant language settings file
         if len(ext):
-            name = os.path.splitext(entry.get("name"))[0]
+            name = os.path.splitext(entry.get("syntax", entry.get("name")))[0]
             devlog("Found Extensions: %s - %s" % (name, str(ext)))
             map_extensions(ext, lst, name, ext_map, ext_added)
 
@@ -332,7 +332,12 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         for syntax in self.syntaxes:
             # stop on the first syntax that matches
             if self.syntax_matches(syntax):
-                self.set_syntax(syntax.get("name"))
+                self.set_syntax(syntax.get("syntax", syntax.get("name")))
+                if "name" in syntax:
+                    log(
+                        "Deprecation Warning - 'name' has been deprecated "
+                        "in favor of 'syntax' and will be removed in the future."
+                    )
                 break
 
     def reset_cache_variables(self, view):
