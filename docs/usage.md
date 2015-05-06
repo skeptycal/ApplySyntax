@@ -94,7 +94,7 @@ In this case, there is no `match` key, so only one rule needs to match:
             {"file_path": ".*\\.rb$"},
             {"file_path": ".*\\.podspec$"},
             {"file_path": ".*\\.rabl$"},
-            {"binary": "ruby"}
+            {"interpreter": "ruby"}
         ]
     },
 ```
@@ -118,8 +118,8 @@ A `first_line` rule allows you to check whether the first line of the file's con
 {"first_line": "^<\\?xml"},
 ```
 
-### Binary (Shebang)
-A `binary` rule does the same thing as a `first_line` rule that uses a regex to match a shebang.  The difference being that ApplySyntax will construct the regex for you.
+### Interpreter (Shebang)
+An `interpreter` rule does the same thing as a `first_line` rule that uses a regex to match an interpreter directive (shebang).  The difference being that ApplySyntax will construct the regex for you.
 
 So a `first_line` rule:
 
@@ -130,8 +130,10 @@ So a `first_line` rule:
 Can be simplified as:
 
 ```js
-{"binary": "ruby"}
+{"interpreter": "ruby"}
 ```
+
+For backwards compatibility with older versions of ApplySyntax, the rule name `binary` is also accepted, and functions exactly like `interpreter`.
 
 ### Function Rule
 This is an example of using a custom function to decide whether or not to apply a syntax. The source file should be in a plugin folder. `name` is the function name and `source` is the file in which the function is contained; you must include the package it resides in, all sub-folders leading to the file, and the actual file name (extension not needed as it is assumed to be a python file).
