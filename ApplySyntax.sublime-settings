@@ -58,9 +58,7 @@
         {
             // Will make .html.erb as HTML files
             "syntax": "Rails/HTML (Rails)",
-            "rules": [
-                {"file_path": ".*\\.html\\.erb$"}
-            ]
+            "extensions": ["html.erb"]
         },
         {
             "syntax": "Rails/Ruby Haml",
