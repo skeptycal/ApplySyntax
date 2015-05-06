@@ -16,6 +16,10 @@
     // "extenstions" are ignored by "match": "all" setting.
     "add_exts_to_lang_settings": true,
 
+    // Control level of logging in the console.
+    // (true|false|"verbose")
+    "debug": true,
+
     "default_syntaxes": [
         {
             // I put XML first because of files like *.tmLanguage. It is unlikely

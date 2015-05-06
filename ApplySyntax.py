@@ -15,6 +15,15 @@ DEFAULT_SETTINGS = '''
     // JavaScript syntax, set new_file_syntax to 'JavaScript'.
     "new_file_syntax": false,
 
+    // Auto add extensions to language settings file in User folder.
+    // Do not manually remove "apply_syntax_extensions" from the settings file.
+    // "extenstions" are ignored by "match": "all" setting.
+    "add_exts_to_lang_settings": true,
+
+    // Control level of logging in the console.
+    // (true|false|"verbose")
+    "debug": true,
+
     // Put your custom syntax rules here:
     "syntaxes": [
     ]
@@ -252,7 +261,7 @@ def debug(msg):
     ApplySyntax log message in console (debug mode only)
     """
 
-    if bool(SETTINGS.get("debug_enabled", True)) or bool(SETTINGS.get("dev_enabled", False)):
+    if SETTINGS.get("debug", True) in (True, 'verbose'):
         log(msg)
 
 
@@ -261,7 +270,7 @@ def devlog(msg):
     ApplySyntax log message in console (dev mode only)
     """
 
-    if bool(SETTINGS.get("dev_enabled", False)):
+    if SETTINGS.get("debug", True) == 'verbose':
         log(msg)
 
 
