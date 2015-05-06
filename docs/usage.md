@@ -4,12 +4,11 @@ Configuring and using ApplySyntax.
 ---
 
 # Overview
-ApplySyntax is based on the idea of creating rules for applying a certain syntaxes to specific files. You define the rules, the plugin checks them. The first one to pass wins.
+ApplySyntax is based on the idea of creating rules for applying certain syntaxes to specific files. You define the rules, the plugin checks them. The first one to pass wins.
 
-Create your own custom rules in `Packages/User/ApplySyntax.sublime-settings`. The easiest way to get started is to just copy the default settings file found in `Packages/ApplySyntax/ApplySyntax.sublime-settings` to your `Packages/User` directory and modify it to meet your needs. Make sure you remove the `default_syntaxes` key and create a new one called `syntaxes`. If you don't, you will overwrite the default syntaxes and they and you won't get updates to them.
+ApplySyntax allows you to create your own custom rules. The easiest way to get started is to create a settings file called `ApplySyntax.sublime-settings` in your `Packages/User` folder.  You can override the default settings in `Packages/ApplySyntax/ApplySyntax.sublime-settings` by setting them in your `Packages/User/ApplySyntax.sublime-settings` file. You can override any setting to meet your needs.  To append rules to the default rule set, you can create a key called `syntaxes` (modifying `default_syntaxes` will wipe out all the default rules and is not recommended as you won't get the latest updates).
 
 # Creating Rules
-
 Each rule is a dictionary within the syntax array.  Let's take a look at the top level parameters.
 
 ## Name
@@ -36,7 +35,7 @@ If it is desirable for the syntax rule to reference multiple tmLanguage files be
 Notice that each syntax file has a different path since they come from completely different plugins.
 
 ## Extensions
-`extensions` is a convenience option to add a given set of extensions to your language settings file.  By adding the extension to the language settings file, sidebar icons in ST3 will display the proper icon, and files will load with the proper syntax via Sublime's default extension detection method.  Keep in mind though that other rules can override this.  As `extensions` isn't really a rule, but just a list which ApplySyntax uses to automatically add extension to the language settings file.  A hit (match) on this array won't currently stop ApplySyntax from processing more rules (this may change in the future).
+`extensions` is a convenience option to add a given set of extensions to your language settings file.  By adding the extension to the language settings file, sidebar icons in ST3 will display the proper icon, and files will load with the proper syntax via Sublime's default extension detection method.  Keep in mind though that other rules can override this. `extensions` isn't really a rule, but just a list which ApplySyntax uses to automatically add extension to the language settings file.  A match within this array won't currently stop ApplySyntax from processing rules since it is not evaluated as a rule (this may change in the future).
 
 Apply syntax will create a file `ApplySyntax.ext-list` in your `User` folder and track which extension it added so that if you remove a rule, ApplySyntax will only remove the extensions it added to the language file in question.
 
@@ -108,7 +107,7 @@ A `file_name` rule defines a regex to match against the complete file path. The 
 ```
 
 ### First Line Rule
-A `first_line` rule allows you to check whether the first line of the file's content matches a given regex. As with `file_name` rules (see above), the pattern is always anchored to the beginning of the line.
+A `first_line` rule allows you to check whether the first line of the file's content matches a given regex. As with `file_name` [rules](#file-name-rule), the pattern is always anchored to the beginning of the line.
 
 ```js
 {"first_line": "^<\\?xml"},
