@@ -12,7 +12,7 @@ ApplySyntax allows you to create your own custom rules. The easiest way to get s
 Each rule is a dictionary within the syntax array.  Let's take a look at the top level parameters.
 
 ## Syntax
-`syntax` is the syntax file that will be applied to a view which meets the criteria defined in the rule.
+The `syntax` attribute is the syntax file that will be applied to a view which meets the criteria defined in the rule.
 
 For syntax files you must specify the path to the syntax file. The plugin is capable of supporting multiple levels of folder nesting if you need it to. For example, if you had all of your tmLanguage files for Rails organized in a folder like this: `Packages/Rails/Language/*.tmLanguage`, and you were looking to use the `Ruby Haml.tmLanguage` file, the path to name translation would simply be: `Packages/Rails/Language/Ruby Haml.tmLanguage` -> `Rails/Language/Ruby Haml`.
 
@@ -38,18 +38,24 @@ Notice that each syntax file has a different path since they come from completel
     The previous name for this key was `name` and has been deprecated and will be removed in the future.
 
 ## Extensions
-`extensions` is an easy way define extensions to apply a syntax to.  'extensions' is an array of strings where each string is an extension.  No `.` is needed when defining extensions, unless it is desired to target a dot file like `.gitignore`, then you would include the `.`.
+The `extensions` attribute is used to define extensions to apply a syntax to.  `extensions` is an array of strings where each string is an extension.  No `.` is needed when defining extensions, unless it is desired to target a dot file like `.gitignore`, then you would include the `.`.
 
-`extensions` is run before all other rules, and it never takes part in "[match all](#match)" rule sets as it is run separate and before normal rule sets; if an extension is matched here, all other rules will be skipped.
+```js
+    {
+        "syntax": "YAML/YAML",
+        "extensions": [".gemrc", "yml", "yml.dist"]
+    },
+```
 
-An added benefit of `extensions` is if you are using ST3 and set [`add_exts_to_lang_settings`](#add-extensions-to-language-settings) to `true`, ApplySyntax will add the extensions to the specified syntax language's settings file in your `User` folder.  By doing this, Sublime Text will be able to show the associated icon for the file type in the sidebar.  Apply syntax will also create a file `ApplySyntax.ext-list` in your `User` folder and track which extension it added so that if you remove a rule, ApplySyntax will only remove the extensions it added to the language file in question. If you do not like this functionality, you can simply disable `add_exts_to_lang_settings` by it to `false`.
+`extensions` is evaluated before all other rules, and it never takes part in "[match all](#match)" rule sets as it is run separate from the normal rule sets; if an extension is matched here, all other rules will be skipped.
 
+An added benefit of `extensions`, if you are using ST3 and set [`add_exts_to_lang_settings`](#add-extensions-to-language-settings) to `true`, is that ApplySyntax will add the extensions to the specified syntax language's settings file in your `User` folder.  By doing this, Sublime Text will be able to show the associated icon for the file type in the sidebar.  Apply syntax will also create a file `ApplySyntax.ext-list` in your `User` folder and track which extension it added so that if you remove a rule, ApplySyntax will only remove the extensions it added to the language file in question. If you do not like this functionality, you can simply disable `add_exts_to_lang_settings` by setting it to `false`.
 
 !!! note "Note":
     `add_exts_to_lang_settings` will not be applied to `extensions` found in a [project specific rule](#project-specific-rules), as project specific rules are not global, but the effects of `add_exts_to_lang_settings` are global.
 
 ## Match
-`match` is a setting that you either include or omit.  When included, you set it to `all`.  When set, all rules defined must be met for a match to be considered successful.  `match` ignores the [`extensions`](#extensions) key as `extensions` never take part in 'match all' rule sets.  If you want to include an extension rule in a 'match all' rule set, then a [`file_path`](#file-path-rule) rule should be used.
+`match` is a setting that you either include or omit.  When included, you set it to `all`.  When set, all rules defined must be met for a match to be considered successful.  `match` ignores the [`extensions`](#extensions) key as `extensions` never take part in "match all" rule sets.  If you want to include an extension rule in a "match all" rule set, then a [`file_path`](#file-path-rule) rule should be used.
 
 ```js
     "match": "all"
@@ -210,3 +216,5 @@ By default, the `debug` setting is turned on so that users have some form of vis
     // (true|false|"verbose")
     "debug": true,
 ```
+
+*[ST3]: Sublime Text 3
