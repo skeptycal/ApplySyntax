@@ -1,3 +1,4 @@
+"""Apply Syntax."""
 import sublime
 import sublime_plugin
 import os
@@ -10,9 +11,9 @@ DEFAULT_SETTINGS = '''
     // If you want exceptions reraised so you can see them in the console, change this to true.
     "reraise_exceptions": false,
 
-    // If you want to have a syntax applied when new files are created, set new_file_syntax to the name of the syntax to use.
-    // The format is exactly the same as "syntax" in the rules below. For example, if you want to have a new file use
-    // JavaScript syntax, set new_file_syntax to 'JavaScript'.
+    // If you want to have a syntax applied when new files are created, set new_file_syntax to the name of the syntax
+    // to use.  The format is exactly the same as "syntax" in the rules below. For example, if you want to have a new
+    // file use JavaScript syntax, set new_file_syntax to 'JavaScript'.
     "new_file_syntax": false,
 
     // Auto add extensions to language settings file in User folder.
@@ -44,9 +45,7 @@ on_touched_callback = None
 
 
 def ensure_user_settings():
-    """
-    Create a default 'User' settings file for ApplySyntax if it doesn't exist
-    """
+    """Create a default 'User' settings file for ApplySyntax if it doesn't exist."""
 
     user_settings_file = os.path.join(sublime.packages_path(), 'User', PLUGIN_SETTINGS)
     if os.path.exists(user_settings_file):
@@ -58,7 +57,8 @@ def ensure_user_settings():
 
 
 def get_all_syntax_files():
-    """ Find all sublime-syntax and tmLanguage files. """
+    """Find all sublime-syntax and tmLanguage files."""
+
     syntax_files = []
     if USE_ST_SYNTAX:
         syntax_files += sublime.find_resources("*.sublime-syntax")
@@ -67,9 +67,7 @@ def get_all_syntax_files():
 
 
 def sublime_format_path(pth):
-    """
-    Format the path for the sublime API
-    """
+    """Format the path for the sublime API."""
 
     m = re.match(r"^([A-Za-z]{1}):(?:/|\\)(.*)", pth)
     if sublime.platform() == "windows" and m is not None:
@@ -80,6 +78,7 @@ def sublime_format_path(pth):
 def get_lang_hash():
     """
     Return the hash of the loaded languages in Sublime.
+
     Return the actual language frozenset (hashable) as well.
     """
 
@@ -102,9 +101,7 @@ def get_lang_hash():
 
 
 def update_language_extensions(ext_added):
-    """
-    Process the extensions for each language
-    """
+    """Process the extensions for each language."""
 
     for lang, exts in ext_added.items():
         updated = False
@@ -135,9 +132,7 @@ def update_language_extensions(ext_added):
 
 
 def map_extensions(ext, lst, names, ext_map, ext_added):
-    """
-    Create mappings to help with updating and prunning extensions
-    """
+    """Create mappings to help with updating and prunning extensions."""
 
     # Always deal with language names as a series of names
     if not isinstance(names, list):
@@ -167,8 +162,7 @@ def map_extensions(ext, lst, names, ext_map, ext_added):
 
 def prune_language_extensions(ext_map, ext_added):
     """
-    Prune dead extensions that were added by ApplySyntax (AS),
-    but are no longer defined in AS
+    Prune dead extensions that were added by ApplySyntax (AS), but are no longer defined in AS.
 
     exts        - sublime's extension list for the given language
     old_ext     - The current saved list of AS added extension
@@ -219,10 +213,7 @@ def prune_language_extensions(ext_map, ext_added):
 
 
 def update_extenstions(lst):
-    """
-    Walk through all syntax rules updating the
-    extensions in the corresponding language settings.
-    """
+    """Walk through all syntax rules updating the extensions in the corresponding language settings."""
 
     devlog("Updating Extensions")
 
@@ -249,33 +240,32 @@ def update_extenstions(lst):
 
 
 def log(msg):
-    """
-    ApplySyntax log message in console
-    """
+    """ApplySyntax log message in console."""
 
     print("ApplySyntax: %s" % msg)
 
 
 def debug(msg):
-    """
-    ApplySyntax log message in console (debug mode only)
-    """
+    """ApplySyntax log message in console (debug mode only)."""
 
     if SETTINGS.get("debug", True) in (True, 'verbose'):
         log(msg)
 
 
 def devlog(msg):
-    """
-    ApplySyntax log message in console (dev mode only)
-    """
+    """ApplySyntax log message in console (dev mode only)."""
 
     if SETTINGS.get("debug", True) == 'verbose':
         log(msg)
 
 
 class ApplySyntaxCommand(sublime_plugin.EventListener):
+
+    """ApplySyntax command."""
+
     def __init__(self):
+        """Initialization."""
+
         global on_touched_callback
         self.first_line = None
         self.file_name = None
@@ -292,6 +282,8 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         on_touched_callback = self.on_touched
 
     def print_deprecation_warning(self, keyword):
+        """Print the deprecation warnings."""
+
         if self.seen_deprecation_warnings[keyword]:
             return
 
@@ -302,10 +294,13 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         )
 
     def touch(self, view):
+        """Touch the view."""
+
         view.settings().set("apply_syntax_touched", True)
 
     def update_extenstions(self):
-        # Only update extensions if desired
+        """Only update extensions if desired."""
+
         if not SETTINGS.get("add_exts_to_lang_settings", False):
             devlog("Skipping Extension Update")
             return
@@ -317,11 +312,13 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
             update_extenstions(lst)
 
     def get_setting(self, name, default=None):
-        active_settings = self.view.settings() if self.view else {}
+        """Get the settings."""
 
+        active_settings = self.view.settings() if self.view else {}
         return active_settings.get(name, SETTINGS.get(name, default))
 
     def on_new(self, view):
+        """Apply syntax on new file."""
         self.touch(view)
         self.update_extenstions()
         name = self.get_setting("new_file_syntax")
@@ -330,21 +327,29 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
             self.set_syntax(name)
 
     def on_load(self, view):
+        """Apply syntax on file load."""
+
         self.touch(view)
         self.update_extenstions()
         self.detect_syntax(view)
 
     def on_post_save(self, view):
+        """Apply syntax on save."""
+
         self.touch(view)
         self.update_extenstions()
         self.detect_syntax(view)
 
     def on_touched(self, view):
+        """Apply syntax to untouched views."""
+
         self.touch(view)
         self.update_extenstions()
         self.detect_syntax(view)
 
     def detect_syntax(self, view):
+        """Detect the syntax."""
+
         if view.is_scratch() or not view.file_name:  # buffer has never been saved
             return
 
@@ -363,6 +368,8 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                 break
 
     def reset_cache_variables(self, view):
+        """Reset variables."""
+
         self.view = view
         self.file_name = view.file_name()
         self.first_line = None  # We read the first line only when needed
@@ -371,18 +378,24 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         self.reraise_exceptions = False
 
     def fetch_first_line(self):
+        """Get the first line."""
+
         self.first_line = self.view.substr(self.view.line(0))  # load the first line only when needed
 
     def fetch_entire_file(self):
+        """Get the entire file content."""
+
         self.entire_file = self.view.substr(sublime.Region(0, self.view.size()))  # load file only when needed
 
     def set_syntax(self, name):
         """
-        the default settings file uses / to separate the syntax name parts, but if the user
+        Set the syntax.
+
+        The default settings file uses / to separate the syntax name parts, but if the user
         is on windows, that might not work right. And if the user happens to be on Mac/Linux but
         is using rules that were written on windows, the same thing will happen. So let's
-        be intelligent about this and replace / and \ with os.path.sep to get to
-        a reasonable starting point
+        be intelligent about this and replace forward slashes and back slashes with os.path.sep to get
+        a reasonable starting point.
         """
 
         if not isinstance(name, list):
@@ -421,6 +434,8 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                     break
 
     def create_extension_rule(self, syntaxes):
+        """Create a rules for the defined extensions."""
+
         for syntax in syntaxes:
             if 'extensions' in syntax:
                 if 'rules' not in syntax:
@@ -429,6 +444,8 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         return syntaxes
 
     def load_syntaxes(self):
+        """Load syntax rules."""
+
         self.reraise_exceptions = SETTINGS.get("reraise_exceptions")
         # load the default syntaxes
         default_syntaxes = self.create_extension_rule(
@@ -446,6 +463,8 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         self.syntaxes = project_syntaxes + user_syntaxes + default_syntaxes
 
     def syntax_matches(self, syntax):
+        """Match syntax rules."""
+
         rules = syntax.get("rules", [])
         match_all = syntax.get("match") == 'all'
 
@@ -483,6 +502,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
             return False
 
     def get_function(self, path_to_file, function_name):
+        """Get the match function."""
         try:
             path_name = sublime_format_path(os.path.join("Packages", path_to_file))
             module_name = os.path.splitext(path_name)[0].replace('Packages/', '', 1).replace('/', '.')
@@ -499,6 +519,8 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         return function
 
     def extension_matches(self, rule):
+        """Match extension."""
+
         match = False
         extensions = rule.get('extensions', [])
         file_name = os.path.basename(self.file_name).lower()
@@ -510,6 +532,8 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         return match
 
     def function_matches(self, rule):
+        """Perform function match."""
+
         function = rule.get("function")
         path_to_file = function.get("source")
         function_name = function.get("name")
@@ -534,6 +558,8 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                 return False
 
     def regexp_matches(self, rule):
+        """Perform regex matches."""
+
         from_beginning = True  # match only from the beginning or anywhere in the string
 
         if "first_line" in rule:
@@ -581,6 +607,8 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
 
 
 def touch_untouched():
+    """Touch the untouched views."""
+
     for window in sublime.windows():
         for view in window.views():
             if not view.settings().get("apply_syntax_touched", False):
@@ -593,6 +621,7 @@ def touch_untouched():
 def on_reload():
     """
     Only update extensions if desired.
+
     Remove extensions added by ApplySyntax if disabled.
     """
 
@@ -610,6 +639,8 @@ def on_reload():
 
 
 def plugin_loaded():
+    """Setup plugin."""
+
     global SETTINGS
     ensure_user_settings()
     SETTINGS = sublime.load_settings(PLUGIN_SETTINGS)

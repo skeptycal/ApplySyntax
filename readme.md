@@ -1,3 +1,4 @@
+[![Unix Build Status][travis-image]][travis-link]
 # ApplySyntax
 ApplySyntax is a plugin for Sublime Text 2 and 3 that allows you to detect and apply the syntax of files that might not otherwise be detected properly. For example, files with the `.rb` extension are usually Ruby files, but when they are found in a Rails project, they could be RSpec spec files, Cucumber step files, Ruby on Rails files (controllers, models, etc), or just plain Ruby files. This is actually the problem I was trying to solve when I started working on this plugin.
 
@@ -28,3 +29,6 @@ ApplySyntax can be installed in a variety of ways:
 
 # Documentation
 http://facelessuser.github.io/ApplySyntax/
+
+[travis-image]: https://img.shields.io/travis/facelessuser/ApplySyntax.svg
+[travis-link]: https://travis-ci.org/facelessuser/ApplySyntax

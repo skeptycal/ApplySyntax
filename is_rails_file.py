@@ -1,9 +1,12 @@
+"""Test if rails file."""
 import os
 import re
 import platform
 
 
 def is_rails_file(file_name):
+    """Check file location and name to determine if a rails file."""
+
     windows = platform.system() == "Windows"
 
     is_unc = windows and file_name.startswith("\\\\")
