@@ -2,24 +2,27 @@ site_name: ApplySyntax Documentation
 repo_url: https://github.com/facelessuser/ApplySyntax
 site_description: Syntax detector for Sublime Text.
 pages:
-- ['index.md', 'Home']
-- ['usage.md', 'User Guide']
+- About ApplySyntax: index.md
+- Installation: installation.md
+- User Guide: usage.md
+- Contributing & Support: contributing.md
 theme: readthedocs
 theme_dir: doc_theme
 markdown_extensions:
-    markdown.extensions.extra:
-    markdown.extensions.admonition:
-    markdown.extensions.smarty:
-    markdown.extensions.nl2br:
-    markdown.extensions.codehilite:
-    pymdownx.inlinehilite:
-    pymdownx.magiclink:
-    pymdownx.betterem:
-    pymdownx.tilde:
-    pymdownx.caret:
-    pymdownx.smartsymbols:
-    pymdownx.githubemoji:
-    pymdownx.tasklist:
-    pymdownx.superfences:
-    pymdownx.progressbar:
-    pymdownx.headeranchor:
+- markdown.extensions.toc
+- markdown.extensions.extra
+- markdown.extensions.admonition
+- markdown.extensions.smarty
+- markdown.extensions.nl2br
+- markdown.extensions.codehilite
+- pymdownx.inlinehilite
+- pymdownx.magiclink
+- pymdownx.betterem
+- pymdownx.tilde
+- pymdownx.caret
+- pymdownx.smartsymbols
+- pymdownx.githubemoji
+- pymdownx.tasklist
+- pymdownx.superfences
+- pymdownx.progressbar
+- pymdownx.headeranchor

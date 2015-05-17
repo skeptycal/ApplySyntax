@@ -11,22 +11,6 @@ DetectSyntax was originally created by phillipkoebbe.  In his words, these are h
 [2]: https://gist.github.com/1497794
 [3]: https://github.com/aparajita/SetSyntax
 
-# Installation
-ApplySyntax can be installed in a variety of ways:
-
-* Through Package Control [Package Control](https://packagecontrol.io/)
-
-    - Open Package Control
-    - Select 'Install Package'
-    - Find and select 'ApplySyntax'
-
-* By cloning this repository in Packages
-
-    - cd into your Packages folder
-    - `git clone git://github.com/facelessuser/ApplySyntax.git`
-
-* By downloading the files and placing them in a directory under `Packages/ApplySyntax`. If you download and extract a compressed archive from GitHub, the directory will be `facelessuser-ApplySyntax`. Remove `facelessuser-`.
-
 # Documentation
 http://facelessuser.github.io/ApplySyntax/
 
