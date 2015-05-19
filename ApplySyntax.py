@@ -83,6 +83,8 @@ def get_lang_hash():
     """
 
     def was_seen(item, item_set):
+        """Check if item was seen already."""
+
         seen_item = True
         base = os.path.splitext(item)[0]
         if base is not item_set:
@@ -190,7 +192,7 @@ def prune_language_extensions(ext_map, ext_added):
             try:
                 if ext_map[ext][-1] != name:
                     updated_ext.remove(ext)
-            except:
+            except Exception:
                 pass
 
         # Update settings file if necessary
@@ -427,7 +429,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                         self.view.set_syntax_file(new_syntax)
                         debug('Syntax set to ' + name + ' using ' + new_syntax)
                         break
-                    except:
+                    except Exception:
                         debug('Syntax file for ' + name + ' does not exist at ' + new_syntax)
                 else:
                     debug('Syntax already set to ' + new_syntax)
@@ -510,7 +512,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
             sys.modules[module_name] = module
             exec(compile(sublime.load_resource(path_name), module_name, 'exec'), sys.modules[module_name].__dict__)
             function = getattr(module, function_name)
-        except:
+        except Exception:
             if self.reraise_exceptions:
                 raise
             else:
@@ -551,7 +553,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
 
         try:
             return function(self.file_name)
-        except:
+        except Exception:
             if self.reraise_exceptions:
                 raise
             else:
