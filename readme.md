@@ -14,5 +14,5 @@ DetectSyntax was originally created by phillipkoebbe.  In his words, these are h
 # Documentation
 http://facelessuser.github.io/ApplySyntax/
 
-[travis-image]: https://img.shields.io/travis/facelessuser/ApplySyntax.svg
+[travis-image]: https://img.shields.io/travis/facelessuser/ApplySyntax/master.svg
 [travis-link]: https://travis-ci.org/facelessuser/ApplySyntax
