@@ -5,7 +5,7 @@ pages:
   - About ApplySyntax: index.md
   - Installation: installation.md
   - User Guide: usage.md
-  - Contributing & Support: contributing.md
+  - Contributing &amp; Support: contributing.md
 theme: readthedocs
 theme_dir: doc_theme
 markdown_extensions:
