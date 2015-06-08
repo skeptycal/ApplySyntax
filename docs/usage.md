@@ -49,13 +49,13 @@ The `extensions` attribute is used to define extensions to apply a syntax to.  `
 
 `extensions` is evaluated before all other rules, and it never takes part in "[match all](#match)" rule sets as it is run separate from the normal rule sets; if an extension is matched here, all other rules will be skipped.
 
-An added benefit of `extensions`, if you are using ST3 and set [`add_exts_to_lang_settings`](#add-extensions-to-language-settings) to `true`, is that ApplySyntax will add the extensions to the specified syntax language's settings file in your `User` folder.  By doing this, Sublime Text will be able to show the associated icon for the file type in the sidebar.  Apply syntax will also create a file `ApplySyntax.ext-list` in your `User` folder and track which extension it added so that if you remove a rule, ApplySyntax will only remove the extensions it added to the language file in question. If you do not like this functionality, you can simply disable `add_exts_to_lang_settings` by setting it to `false`.
+An added benefit of `extensions`, if you are using ST3 and set [add_exts_to_lang_settings](#add-extensions-to-language-settings) to `true`, is that ApplySyntax will add the extensions to the specified syntax language's settings file in your `User` folder.  By doing this, Sublime Text will be able to show the associated icon for the file type in the sidebar.  Apply syntax will also create a file `ApplySyntax.ext-list` in your `User` folder and track which extension it added so that if you remove a rule, ApplySyntax will only remove the extensions it added to the language file in question. If you do not like this functionality, you can simply disable `add_exts_to_lang_settings` by setting it to `false`.
 
 !!! note "Note":
     `add_exts_to_lang_settings` will not be applied to `extensions` found in a [project specific rule](#project-specific-rules), as project specific rules are not global, but the effects of `add_exts_to_lang_settings` are global.
 
 ### Match
-`match` is a setting that you either include or omit.  When included, you set it to `all`.  When set, all rules defined must be met for a match to be considered successful.  `match` ignores the [`extensions`](#extensions) key as `extensions` never take part in "match all" rule sets.  If you want to include an extension rule in a "match all" rule set, then a [`file_path`](#file-path-rule) rule should be used.
+`match` is a setting that you either include or omit.  When included, you set it to `all`.  When set, all rules defined must be met for a match to be considered successful.  `match` ignores the [extensions](#extensions) key as `extensions` never take part in "match all" rule sets.  If you want to include an extension rule in a "match all" rule set, then a [file_path](#file-path-rule) rule should be used.
 
 ```js
     "match": "all"
@@ -170,7 +170,7 @@ Sometimes a filename or first line search is just not enough and maybe a functio
 ### Project Specific Rules
 To define project specific syntaxes, just add `project_syntaxes` to your project file.  `project_syntaxes` is an array; just add your syntax rules to `project_syntaxes` just like you would add them to `syntaxes` in your user settings file, and ApplySyntax will prepend the rules to the beginning of your defined rules.  The order of rules is as follows: project --> user --> default.
 
-There is one difference between project specific rules and global rules.  In project rules, the [`extensions`](#extensions) key will not be applied to the associated syntax language settings file as project specific rules are not global, but language settings files are global.
+There is one difference between project specific rules and global rules.  In project rules, the [extensions](#extensions) key will not be applied to the associated syntax language settings file as project specific rules are not global, but language settings files are global.
 
 ```js
     "project_syntaxes": [
@@ -195,7 +195,7 @@ If an exception occurs when processing a function, this will re-raised the captu
 ```
 
 #### New File Syntax
-If you want to have a syntax applied when new files are created, set `new_file_syntax` to the name of the syntax to use. The format is exactly the same as the [`syntax`](#syntax) parameter in the syntax rules mentioned earlier. For example, if you want to have a new file use JavaScript syntax, set `new_file_syntax` to `JavaScript/JavaScript`.  The default is `false`.
+If you want to have a syntax applied when new files are created, set `new_file_syntax` to the name of the syntax to use. The format is exactly the same as the [syntax](#syntax) parameter in the syntax rules mentioned earlier. For example, if you want to have a new file use JavaScript syntax, set `new_file_syntax` to `JavaScript/JavaScript`.  The default is `false`.
 
 ```js
     "new_file_syntax": "JavaScript/JavaScript",
