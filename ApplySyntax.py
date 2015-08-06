@@ -275,25 +275,30 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         self.view = None
         self.syntaxes = []
         self.reraise_exceptions = False
-        self.seen_deprecation_warnings = {
-            'binary': False,
-            'file_name': False,
-            'name': False
-        }
+        self.seen_deprecation_warnings = set()
 
         on_touched_callback = self.on_touched
 
-    def print_deprecation_warning(self, keyword):
+    def print_deprecation_warning(self, keyword, rule=None):
         """Print the deprecation warnings."""
 
-        if self.seen_deprecation_warnings[keyword]:
-            return
+        if rule is not None:
+            warn_key = "%s,%s" % (keyword, rule)
+        else:
+            warn_key = keyword
 
-        self.seen_deprecation_warnings[keyword] = True
-        log(
-            "Warning: '%s' keyword is deprecated and may be removed in the future."
-            % keyword
-        )
+        if warn_key not in self.seen_deprecation_warnings:
+            self.seen_deprecation_warnings.add(warn_key)
+            if rule is None:
+                log(
+                    "Warning: '%s' keyword is deprecated and will be removed in the future."
+                    % keyword
+                )
+            else:
+                log(
+                    "Warning: '%s' keyword in '%s' rule is deprecated and will be removed in the future."
+                    % (keyword, rule)
+                )
 
     def touch(self, view):
         """Touch the view."""
@@ -352,6 +357,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
     def detect_syntax(self, view):
         """Detect the syntax."""
 
+        self.plugins = {}
         if view.is_scratch() or not view.file_name:  # buffer has never been saved
             return
 
@@ -368,6 +374,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
                 if "name" in syntax:
                     self.print_deprecation_warning('name')
                 break
+        self.plugins = {}
 
     def reset_cache_variables(self, view):
         """Reset variables."""
@@ -503,9 +510,11 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
             # rules matched
             return False
 
-    def get_function(self, path_to_file, function_name):
+    def get_function(self, path_to_file, function_name=None):
         """Get the match function."""
         try:
+            if function_name is None:
+                function_name = "syntax_test"
             path_name = sublime_format_path(os.path.join("Packages", path_to_file))
             module_name = os.path.splitext(path_name)[0].replace('Packages/', '', 1).replace('/', '.')
             module = imp.new_module(module_name)
@@ -536,23 +545,31 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
     def function_matches(self, rule):
         """Perform function match."""
 
-        function = rule.get("function")
-        path_to_file = function.get("source")
-        function_name = function.get("name")
+        function_rule = rule.get("function")
+        source = function_rule.get("source")
+        args = function_rule.get("args", None)
+        if source in self.plugins:
+            function = self.plugins[source]
+        else:
+            function_name = function_rule.get("name", None)
+            if function_name is not None:
+                self.print_deprecation_warning('name', 'function')
 
-        if not path_to_file or path_to_file.lower().endswith(".py"):
-            # Bad format
-            return False
+            if not source or source.lower().endswith(".py"):
+                # Bad format
+                return False
 
-        path_to_file += '.py'
-        function = self.get_function(path_to_file, function_name)
+            path_to_file = source.replace('.', '/') + '.py'
+            function = self.get_function(path_to_file, function_name)
 
-        if function is None:
-            # can't find it ... nothing more to do
-            return False
+            if function is None:
+                # can't find it ... nothing more to do
+                return False
+            else:
+                self.plugins[source] = function
 
         try:
-            return function(self.file_name)
+            return function(self.file_name, **args) if args is not None else function(self.file_name)
         except Exception:
             if self.reraise_exceptions:
                 raise

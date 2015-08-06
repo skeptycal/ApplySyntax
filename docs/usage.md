@@ -144,16 +144,32 @@ For backwards compatibility with older versions of ApplySyntax, the rule name `b
     The previous name for this key was `binary` and has been deprecated and will be removed in the future.
 
 #### Function Rule
-This is an example of using a custom function to decide whether or not to apply a syntax. The source file should be in a plugin folder. `name` is the function name and `source` is the file in which the function is contained; you must include the package it resides in, all sub-folders leading to the file, and the actual file name (extension not needed as it is assumed to be a python file).
+This is an example of using a custom function to decide whether or not to apply a syntax. This is done via ApplySyntax plugins.  The plugin file should be under a plugin folder.
 
-When this function is called, the full file path of the given file will be passed to it as the only argument. You are free to do whatever you want in your function, just return `True` or `False` to indicate whether a match was made.  But please be conscious of keeping it quick and light if possible.
+The function rule takes two parameters.  The first is `source` and is the plugin source file.  It is defined as if you were importing a python plugin.  If you had a plugin in `Packages/ApplySyntax/as_plugins/is_rails_file.py`, it would be defined under `source` as `ApplySyntax.as_plugins.is_rails_file`.  Function rules still support the legacy way: `ApplySyntax/as_plugins/is_rails_file`, but it is recommended to use the dot notation as it makes more sense from a Python import perspective.
+
+The second parameter is `args` and is optional. `args` is a dictionary of the keyword arguments the function rule plugin accepts.
+
+The plugin must have a function defined as `syntax_test`. `syntax_test` will be the function called within the plugin file and accepts an argument `file_path` (which is the full path to the file being evaluated), and any custom keyword arguments desired by the user.  The plugin must return either `True` or `False`.
+
 
 ```js
-{"function": {"name": "is_rails_file", "source": "ApplySyntax/is_rails_file"}}
+{"function": {"source": "User.plugins.myplugin", "args": {'foo': "bar"}}}
+```
+
+Example:
+
+```python
+def syntax_test(file_path, foo):
+    # Some test logic
+    return False # True or False
 ```
 
 !!! tip "Tip"
     When placing a function rule module in a package, it is advised to put it in a sub-folder.  The sub-folder does not need an `__init__.py`, it just needs your module(s).
+
+!!! warning "Deprecation"
+    Previously, function rules allowed for a `name` attribute which allowed the user to specify the function name to call in the plugin.  In the current version, ApplySyntax looks for a function named `syntax_test`.  While `name` is still currently supported, it has been deprecated, and will be removed in the future.
 
 #### Content Rule
 Sometimes a filename or first line search is just not enough and maybe a function rule is overkill.  In this case, maybe searching the content of a file can be enough.  You can search a file's content with regex for a specific token via the `contains` rule.

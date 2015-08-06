@@ -4,19 +4,19 @@ import re
 import platform
 
 
-def is_rails_file(file_name):
+def syntax_test(file_path):
     """Check file location and name to determine if a rails file."""
 
     windows = platform.system() == "Windows"
 
-    is_unc = windows and file_name.startswith("\\\\")
+    is_unc = windows and file_path.startswith("\\\\")
 
     if is_unc:
-        unc_drive, path = os.path.splitunc(file_name)
+        unc_drive, path = os.path.splitunc(file_path)
     else:
-        path = os.path.dirname(file_name)
+        path = os.path.dirname(file_path)
 
-    file_name = os.path.basename(file_name).lower()
+    file_name = os.path.basename(file_path).lower()
     name, extension = os.path.splitext(file_name)
 
     if name == 'gemfile':
