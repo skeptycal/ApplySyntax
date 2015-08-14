@@ -29,10 +29,7 @@
             // have any characteristics that distinguish themselves from XML
             // aside from their file extension
             "syntax": "MXML",
-            "extensions": ["mxml"],
-            "rules": [
-                {"first_line": "^<\\?xml"}
-            ]
+            "extensions": ["mxml"]
         },
         {
             // I put XML next because of files like *.tmLanguage. It is unlikely
