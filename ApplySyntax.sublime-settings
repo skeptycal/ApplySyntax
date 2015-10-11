@@ -182,6 +182,16 @@
         {
             "syntax": "JavaScript/JSON",
             "extensions": [".jshintrc", ".jscsrc", ".csslintrc", ".eslintrc", ".bowerrc"]
+        },
+        {
+            // Matlab uses % as the beginning of comments
+            // .m files could also be Objective-C files, but those files don't have % at the beginning of line
+            "syntax": "Matlab/Matlab",
+            "match": "all",
+            "rules": [
+                {"file_path": ".*\\.m$"},
+                {"contains": "(^|\n)\\s*%"}
+            ]
         }
     ]
 }
