@@ -262,7 +262,6 @@ def devlog(msg):
 
 
 class ApplySyntaxCommand(sublime_plugin.EventListener):
-
     """ApplySyntax command."""
 
     def __init__(self):
