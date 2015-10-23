@@ -181,7 +181,7 @@
         },
         {
             "syntax": "JavaScript/JSON",
-            "extensions": [".jshintrc", ".jscsrc", ".csslintrc"]
+            "extensions": [".jshintrc", ".jscsrc", ".csslintrc", ".eslintrc", ".bowerrc"]
         }
     ]
 }
