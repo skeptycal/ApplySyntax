@@ -184,8 +184,19 @@
             "extensions": [".jshintrc", ".jscsrc", ".csslintrc", ".eslintrc", ".bowerrc"]
         },
         {
-            // Matlab uses % as the beginning of comments
-            // .m files could also be Objective-C files, but those files don't have % at the beginning of line
+            // .m files could be Objective-C or Matlab files
+            // We first use a rather reliable regex from GitHub
+            // https://github.com/github/linguist/blob/master/lib/linguist/heuristics.rb#L69)
+            // to apply syntax for Objective-C files
+            "syntax": "Objective-C/Objective-C",
+            "match": "all",
+            "rules": [
+                {"file_path": ".*\\.m$"},
+                {"contains": "^\\s*(@(interface|class|protocol|property|end|synchronised|selector|implementation)\\b|#import\\s+.+\\.h[\">])"}
+            ]
+        },
+        {
+            // Then use the % regex to detect Matlab files
             "syntax": "Matlab/Matlab",
             "match": "all",
             "rules": [
