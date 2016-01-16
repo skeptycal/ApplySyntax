@@ -14,7 +14,7 @@ Each rule is a dictionary within the syntax array.  Let's take a look at the top
 ### Syntax
 The `syntax` attribute is the syntax file that will be applied to a view which meets the criteria defined in the rule.
 
-For syntax files you must specify the path to the syntax file. The plugin is capable of supporting multiple levels of folder nesting if you need it to. For example, if you had all of your tmLanguage files for Rails organized in a folder like this: `Packages/Rails/Language/*.tmLanguage`, and you were looking to use the `Ruby Haml.tmLanguage` file, the path to name translation would simply be: `Packages/Rails/Language/Ruby Haml.tmLanguage` -> `Rails/Language/Ruby Haml`.
+For syntax files you must specify the path to the syntax file. The plugin is capable of supporting multiple levels of folder nesting if you need it to. For example, if you had all of your tmLanguage files for Rails organized in a folder like this: `Packages/Rails/Language/*.tmLanguage`, and you were looking to use the `Ruby Haml.tmLanguage` file, the path to name translation would simply be: `Packages/Rails/Language/Ruby Haml.tmLanguage` --> `Rails/Language/Ruby Haml`.
 
 ```js
 "syntax": "Rails/Language/Ruby Haml"
@@ -33,6 +33,12 @@ If it is desirable for the syntax rule to reference multiple tmLanguage files be
 ```
 
 Notice that each syntax file has a different path since they come from completely different plugins.
+
+Lastly, if using Package Control, it is likely that most, if not all, of your packages will be zipped with the extension `.sublime-package` in the `Installed Packages` folder instead of `Packages`.  These will be handled exactly like plugins installed under `Packages`.  The one difference is that you treat the zip bundle as a folder without the `.sublime-package` extension.  So if we had a syntax file located in a zipped bundle: `Installed Packages/Rails.sublime-package/Language/Ruby Haml.tmLanguage` --> `Rails/Language/Ruby Haml`.
+
+```js
+"syntax": "Rails/Language/Ruby Haml"
+```
 
 !!! warning "Deprecation"
     The previous name for this key was `name` and has been deprecated and will be removed in the future.
