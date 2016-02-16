@@ -181,7 +181,7 @@
         },
         {
             "syntax": "JavaScript/JSON",
-            "extensions": [".jshintrc", ".jscsrc", ".csslintrc", ".eslintrc", ".bowerrc"]
+            "extensions": [".jshintrc", ".jscsrc", ".csslintrc", ".eslintrc", ".bowerrc", "geojson"]
         },
         {
             // .m files could be Objective-C or Matlab files
