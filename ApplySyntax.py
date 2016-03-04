@@ -323,18 +323,6 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         active_settings = self.view.settings() if self.view else {}
         return active_settings.get(name, SETTINGS.get(name, default))
 
-    def get_project_setting(self, name, default=None):
-        """Get project settings."""
-
-        window = self.view.window()
-
-        if window is not None:
-            active_settings = window.project_data()
-            value = active_settings.get(name, default)
-        else:
-            value = default
-        return value
-
     def on_new(self, view):
         """Apply syntax on new file."""
         self.touch(view)
@@ -477,7 +465,7 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         )
         # load any project-defined syntaxes
         project_syntaxes = self.create_extension_rule(
-            self.get_project_setting("project_syntaxes", [])
+            self.get_setting("project_syntaxes", [])
         )
 
         self.syntaxes = project_syntaxes + user_syntaxes + default_syntaxes

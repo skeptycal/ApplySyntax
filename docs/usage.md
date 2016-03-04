@@ -190,20 +190,22 @@ Sometimes a filename or first line search is just not enough and maybe a functio
     Also, try to use very specific regex to ensure you don't get false positives.
 
 ### Project Specific Rules
-To define project specific syntaxes, just add `project_syntaxes` to your project file.  `project_syntaxes` is an array; just add your syntax rules to `project_syntaxes` just like you would add them to `syntaxes` in your user settings file, and ApplySyntax will prepend the rules to the beginning of your defined rules.  The order of rules is as follows: project --> user --> default.
+To define project specific syntaxes, just create a `settings` key in your project file (if it doesn't already exist) and then and an additional key under `settings` called `project_syntaxes`.  `project_syntaxes` is an array; just add your syntax rules to `project_syntaxes` just like you would add them to `syntaxes` in your user settings file, and ApplySyntax will prepend the rules to the beginning of your defined rules.  The order of rules is as follows: project --> user --> default.
 
 There is one difference between project specific rules and global rules.  In project rules, the [extensions](#extensions) key will not be applied to the associated syntax language settings file as project specific rules are not global, but language settings files are global.
 
 ```js
-    "project_syntaxes": [
-        {
-            "syntax": "XML/XML",
-            "rules": [
-                {"file_path": ".*\\.xml(\\.dist)?$"},
-                {"first_line": "^<\\?xml"}
-            ]
-        }
-    ]
+    "settings": {
+        "project_syntaxes": [
+            {
+                "syntax": "XML/XML",
+                "rules": [
+                    {"file_path": ".*\\.xml(\\.dist)?$"},
+                    {"first_line": "^<\\?xml"}
+                ]
+            }
+        ]
+    }
 ```
 
 ### Settings Options
