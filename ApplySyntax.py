@@ -242,20 +242,20 @@ def update_extenstions(lst):
 
 
 def log(msg):
-    """ApplySyntax log message in console."""
+    """Print the ApplySyntax log message in console."""
 
     print("ApplySyntax: %s" % msg)
 
 
 def debug(msg):
-    """ApplySyntax log message in console (debug mode only)."""
+    """Print the debug ApplySyntax log message in console (debug mode only)."""
 
     if SETTINGS.get("debug", True) in (True, 'verbose'):
         log(msg)
 
 
 def devlog(msg):
-    """ApplySyntax log message in console (dev mode only)."""
+    """Print the dev mode ApplySyntax log message in console (dev mode only)."""
 
     if SETTINGS.get("debug", True) == 'verbose':
         log(msg)
