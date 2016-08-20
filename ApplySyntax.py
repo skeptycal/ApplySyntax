@@ -321,7 +321,8 @@ class ApplySyntaxCommand(sublime_plugin.EventListener):
         """Get the settings."""
 
         active_settings = self.view.settings() if self.view else {}
-        return active_settings.get(name, SETTINGS.get(name, default))
+        key_exist = name in active_settings if isinstance(active_settings, dict) else active_settings.has(name)
+        return active_settings.get(name) if key_exist else SETTINGS.get(name, default)
 
     def on_new(self, view):
         """Apply syntax on new file."""
