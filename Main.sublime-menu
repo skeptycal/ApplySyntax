@@ -24,7 +24,18 @@
                                 "command": "open_file",
                                 "args": {"file": "${packages}/User/ApplySyntax.sublime-settings"},
                                 "caption": "Settings – User"
-                            }
+                            },
+                            { "caption": "-" },
+                            {
+                                "caption": "Changelog",
+                                "command": "apply_syntax_changes"
+                            },
+                            { "caption": "-" },
+                            {
+                                "caption": "Support Info",
+                                "command": "apply_syntax_support_info"
+                            },
+                            { "caption": "-" }
                         ]
                     }
                 ]
