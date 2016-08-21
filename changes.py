@@ -8,9 +8,9 @@ html { {{'.background'|css}} }
 div.apply-syntax { padding: 0; margin: 0; {{'.background'|css}} }
 .apply-syntax h1, .apply-syntax h2, .apply-syntax h3,
 .apply-syntax h4, .apply-syntax h5, .apply-syntax h6 {
-    {{'.string'|css('color')}}
+    {{'.string'|css}}
 }
-.apply-syntax blockquote { {{'.comment'|css('color')}} }
+.apply-syntax blockquote { {{'.comment'|css}} }
 .apply-syntax a { text-decoration: none; }
 '''
 
@@ -31,9 +31,14 @@ class ApplySyntaxChangesCommand(sublime_plugin.WindowCommand):
         view.set_name('ApplySyntax - Changelog')
         view.settings().set('gutter', False)
         if has_phantom_support:
-            html = '<div class="apply-syntax">%s</div>' % mdpopups.md2html(view, text)
             mdpopups.add_phantom(
-                view, 'changelog', sublime.Region(0), html, sublime.LAYOUT_INLINE, css=CSS, on_navigate=self.on_navigate
+                view,
+                'changelog',
+                sublime.Region(0),
+                text,
+                sublime.LAYOUT_INLINE,
+                wrapper_class="apply-syntax",
+                css=CSS
             )
         else:
             view.run_command('insert', {"characters": text})
