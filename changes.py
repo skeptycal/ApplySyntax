@@ -14,6 +14,7 @@ div.apply-syntax { padding: 0; margin: 0; {{'.background'|css}} }
 .apply-syntax a { text-decoration: none; }
 '''
 
+
 class ApplySyntaxChangesCommand(sublime_plugin.WindowCommand):
     """Changelog command."""
 
