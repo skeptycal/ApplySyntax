@@ -147,7 +147,7 @@
         },
         {
             "syntax": "YAML/YAML",
-            "extensions": [".gemrc", "yml", "yml.dist"]
+            "extensions": [".gemrc", "yml", "yml.dist", "YAML-tmLanguage"]
         },
         {
             // This rule requires the INI plugin to be installed (via Package Control
