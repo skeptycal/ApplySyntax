@@ -1,3 +1,8 @@
+# ApplySyntax 2.3.1
+> Released Oct 19, 2016
+
+- **FIX**: Config tweaks to YAML rules.
+
 # ApplySyntax 2.3.0
 > Released Aug 21, 2016
 
