@@ -203,6 +203,14 @@
                 {"file_path": ".*\\.m$"},
                 {"contains": "(^|\n)\\s*%"}
             ]
+        },
+        {
+            "syntax": "TypoScript/TypoScript",
+            "rules": [
+                {"file_path": ".*(\\\\|/)ext_conf_template\\.txt$"},
+                {"file_path": ".*(\\\\|/)ext_typoscript_(setup|constants)\\.txt$"},
+                {"file_path": ".*(\\\\|/)(setup|constants)\\.txt$"}
+            ]
         }
     ]
 }
