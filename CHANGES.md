@@ -1,3 +1,9 @@
+# ApplySyntax 2.4.1
+
+> Released June 16, 2017
+
+- **FIX**: Fix usage of deprecated key name in default settings.
+
 # ApplySyntax 2.4.0
 
 > Released May 27, 2017
