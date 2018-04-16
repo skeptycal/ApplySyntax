@@ -55,7 +55,8 @@
             "syntax": [
                 "RSpec/RSpec",
                 "RSpec (snippets and syntax)/Syntaxes/RSpec",
-                "Better RSpec/Better RSpec"
+                "Better RSpec/Better RSpec",
+                "RSpec Buddy/RSpec Buddy"
             ],
             "rules": [
                 {"file_path": ".*spec\\.rb$"},
