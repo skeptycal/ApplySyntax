@@ -161,7 +161,10 @@
             ]
         },
         {
-            "syntax": "ShellScript/Shell-Unix-Generic",
+            "syntax": [
+                "ShellScript/Bash",
+                "ShellScript/Shell-Unix-Generic"
+            ],
             "extensions": ["bash", "sh", "zsh"],
             "rules": [
                 {"file_path": "profile"},
