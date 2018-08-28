@@ -151,14 +151,17 @@
             "extensions": [".gemrc", "yml", "yml.dist", "YAML-tmLanguage"]
         },
         {
+            "syntax": "Git Formats/Git Config",
+            "rules": [
+                {"file_path": ".*/git/config$"},
+                {"file_path": ".*\\\\git\\\\config$"}
+            ]
+        },
+        {
             // This rule requires the INI plugin to be installed (via Package Control
             // or https://github.com/clintberry/sublime-text-2-ini)
             "syntax": "INI/INI",
-            "extensions": [".gitattributes", ".gitconfig", ".gitignore", "ini.dist", ".npmrc"],
-            "rules": [
-                {"file_path": ".*/git/(attributes|config|ignore)$"},
-                {"file_path": ".*\\\\git\\\\(attributes|config|ignore)$"}
-            ]
+            "extensions": ["ini.dist", ".npmrc"]
         },
         {
             "syntax": [
